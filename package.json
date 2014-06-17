@@ -1,0 +1,34 @@
+{
+  "name": "backbone.vm.js",
+  "version": "1.0.0",
+  "description": "A MVVM plugin for backbone",
+  "keywords": [],
+  "homepage": "https://github.com/wangxian/backbone.vm.js",
+  "author": "wangxian",
+  "maintainers": [
+    "wangxian"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wangxian/backbone.vm.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wangxian/backbone.vm.js/issues"
+  },
+  "licenses": "MIT",
+  "spm": {
+    "main": "backbone.vm.js",
+    "dependencies": {
+    },
+    "devDependencies": {
+      "expect.js": "0.3.1",
+      "jquery": "1.10.2",
+      "backbone": "1.1.2",
+      "underscore": "1.6.0"
+    },
+    "engines": {
+      "seajs": "2.2.1"
+    },
+    "tests": "tests/*.js"
+  }
+}

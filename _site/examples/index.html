@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>backbone.vm.js - Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="nico 0.5.1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link type="image/x-icon" href="../static/css/favicon.ico" rel="icon">
+    <link rel="stylesheet" href="../static/css/normalize.css" />
+    <link rel="stylesheet" href="../static/css/site.css" />
+    <link rel="stylesheet" href="../static/css/solarized.css" />
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-50522089-2', 'spm documentation');
+  ga('send', 'pageview');
+</script>
+<script src="../sea-modules/seajs/2.2.1/dist/sea.js?nowrap"></script>
+
+<script>
+  (function() {
+  seajs.config({
+    base: "../"
+  });
+
+  seajs.config({
+    alias: {"backbone":"sea-modules/backbone/1.1.2/backbone.js","expect":"sea-modules/expect/0.3.1/index.js","expect.js":"sea-modules/expect.js/0.3.1/index.js","jquery":"sea-modules/jquery/1.10.2/jquery.js","seajs":"sea-modules/seajs/2.2.1/dist/sea.js","underscore":"sea-modules/underscore/1.6.0/underscore.js"}
+  });
+})();
+</script>
+    <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+  <body class="spmjs">
+    <div class="body-wrapper">
+      <aside class="sidebar-wrapper">
+      <h1>
+          <a href="../">Backbone.vm.js</a>
+      </h1>
+        <p class="sidebar-version">Version: <a href="http://spmjs.io/package/backbone.vm.js" title="">1.0.0</a></p>
+        <p class="sidebar-description" data-keyword="">A MVVM plugin for backbone</p>
+        <a class="sidebar-source" href="http:////github.com/wangxian/backbone.vm.js" target="_blank">View the Project</a>
+        <ul class="sidebar-navigation" role="navigation">
+          <li><a href="../">Doc</a></li>
+          <li><a href="index.html">Demo</a></li>
+          <li><a href="../history.html">History</a></li>
+          <li><a class="test-link" href="../tests/runner.html" target="_blank">Test</a></li>
+          <li><a class="issue-link" href="https://github.com/wangxian/backbone.vm.js/issues" target="_blank">Issues</a></li>
+        </ul>
+        
+
+      </aside>
+      <div class="content-wrapper">
+        
+<article class="hentry">
+  <h1 class="entry-title">Demo</h1>
+  <div class="entry-content">
+    <style>
+.demo { padding: 10px; background-color: #efefef; }  
+</style>
+
+<h2 id="support-tag">Support tag<a href="#support-tag" class="anchor">¶</a></h2><ul>
+<li>&lt;!-- name --&gt;</li>
+<li>vm-val=&quot;var&quot;</li>
+<li>vm-html=&quot;var&quot;</li>
+<li>vm-text=&quot;var&quot;</li>
+<li>vm-if=&quot;expr&quot;</li>
+<li>vm-foreach=&quot;Object|Array&quot;</li>
+<li>vm-show=&quot;expr&quot;</li>
+<li>vm-class=&quot;expr&quot;</li>
+<li>vm-css=&quot;expr&quot;</li>
+<li>vm-attr=&quot;var&quot;</li>
+<li>vm-on=&quot;(click, fn)&quot;</li>
+<li>...</li>
+</ul>
+<div id="container" vm-controller="box1">
+  <h3>demo1:</h3>
+  <div class="demo">
+    <div>Your name is <strong><!-- name -->jake</strong></div>
+    <p>Please input your name: </p>
+    <p><input type="text" vm-val="name" value="jake" /></p>
+  </div>
+</div>
+
+<script type="text/javascript">
+// make test
+seajs.use('backbone.vm', function(vm) {
+
+});  
+
+</script>
+  </div>
+</article>
+
+      </div>
+      
+    </div>
+    <div class="footer-wrapper">
+      <footer>
+        <p class="footer-powered"><a href="http://spmjs.io">spmjs.io</a> •
+<a href="https://github.com/spmjs/spm">spm</a> •
+<a href="http://seajs.org">Sea.js</a> •
+<a href="http://lab.lepture.com/nico/">nico</a>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
