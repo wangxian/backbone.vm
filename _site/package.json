@@ -1,7 +1,7 @@
 {
   "name": "backbone.vm.js",
   "version": "1.0.0",
-  "description": "A MVVM plugin for backbone",
+  "description": "A VM plugin for backbone",
   "keywords": [],
   "homepage": "https://github.com/wangxian/backbone.vm.js",
   "author": "wangxian",
@@ -19,6 +19,7 @@
   "spm": {
     "main": "backbone.vm.js",
     "dependencies": {
+      "jquery": "1.10.2"
     },
     "devDependencies": {
       "expect.js": "0.3.1",

@@ -11,25 +11,23 @@
     <link rel="stylesheet" href="./static/css/site.css" />
     <link rel="stylesheet" href="./static/css/solarized.css" />
 <script>
+if (!location.port) {
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
   ga('create', 'UA-50522089-2', 'spm documentation');
   ga('send', 'pageview');
+}
 </script>
-<script src="./sea-modules/seajs/2.2.1/dist/sea.js?nowrap"></script>
+
+<script src="http://static.alipayobjects.com/seajs/seajs/2.2.0/sea.js"></script>
 
 <script>
-  (function() {
   seajs.config({
-    base: "./"
-  });
-
-  seajs.config({
+    base: "./",
     alias: {"backbone":"sea-modules/backbone/1.1.2/backbone.js","expect":"sea-modules/expect/0.3.1/index.js","expect.js":"sea-modules/expect.js/0.3.1/index.js","jquery":"sea-modules/jquery/1.10.2/jquery.js","seajs":"sea-modules/seajs/2.2.1/dist/sea.js","underscore":"sea-modules/underscore/1.6.0/underscore.js"}
   });
-})();
 </script>
     <!--[if lt IE 9]>
     <script src="./static/js/html5shiv.js"></script>
@@ -42,7 +40,7 @@
           <a href="./">Backbone.vm.js</a>
       </h1>
         <p class="sidebar-version">Version: <a href="http://spmjs.io/package/backbone.vm.js" title="">1.0.0</a></p>
-        <p class="sidebar-description" data-keyword="">A MVVM plugin for backbone</p>
+        <p class="sidebar-description" data-keyword="">A VM plugin for backbone</p>
         <a class="sidebar-source" href="http:////github.com/wangxian/backbone.vm.js" target="_blank">View the Project</a>
         <ul class="sidebar-navigation" role="navigation">
           <li><a href="./">Doc</a></li>
@@ -60,10 +58,66 @@
   <h1 class="entry-title">backbone.vm.js</h1>
   <div class="entry-content">
     <p><a href="http://spmjs.io/package/backbone.vm"><img src="http://spmjs.io/badge/backbone.vm" alt="spm version"></a></p>
-<p>A MVVM plugin for Backbone.js</p>
+<p>A VM plugin for Backbone.js</p>
 <hr>
-<h2 id="install">Install<a href="#install" class="anchor">¶</a></h2><pre>$ spm install backbone.vm --save</pre><h2 id="usage">Usage<a href="#usage" class="anchor">¶</a></h2><div class="highlight"><pre><code class="javascript"><span class="keyword">var</span> vm = require(<span class="string">'backbone.vm.js/1.0.0/backbone.vm'</span>);
-<span class="comment">// use backbone.vm</span></code></pre></div><h2 id="api">Api<a href="#api" class="anchor">¶</a></h2><p>Here is more details.</p>
+<h2 id="install">Install<a href="#install" class="anchor">¶</a></h2><pre>$ spm install backbone.vm --save</pre><h2 id="usage">Usage<a href="#usage" class="anchor">¶</a></h2><p>定义一个HTML，内容如下：</p>
+<div class="highlight"><pre><code class="xml"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"main"</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">form</span> <span class="attribute">action</span>=<span class="value">""</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">label</span> <span class="attribute">for</span>=<span class="value">"name"</span>&gt;</span>请输入姓名：<span class="tag">&lt;/<span class="title">label</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">input</span> <span class="attribute">id</span>=<span class="value">"name"</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">name</span>=<span class="value">"name"</span> 
+           <span class="attribute">vm</span>=<span class="value">"val:name, on:change=updateMe, on:click=showTips"</span> /&gt;</span>
+    您的姓名为：<span class="tag">&lt;<span class="title">span</span> <span class="attribute">vm</span>=<span class="value">"html:name"</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">form</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></pre></div><p>app.js 的内容：</p>
+<div class="highlight"><pre><code class="javascript"><span class="comment">// use backbone.vm</span>
+<span class="keyword">var</span> MainApp = Backbone.VM.extend({
+
+  <span class="comment">// Bind Dom id, Control of the scope of the VM</span>
+  <span class="comment">// So, you can define some VM object</span>
+  el: <span class="string">"#main"</span>,
+
+  <span class="comment">// At initialization we do something</span>
+  initialize: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="comment">// do something...</span>
+  },
+
+  <span class="comment">// when vm.name changed</span>
+  updateMe: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+
+  },
+
+  <span class="comment">// when input[name] click, do this function</span>
+  showTips: <span class="function"><span class="keyword">function</span><span class="params">(e)</span> {</span>
+    <span class="comment">// modify name's value</span>
+    <span class="keyword">this</span>.vm.set(<span class="string">"name"</span>, <span class="string">"xxxxx"</span>);
+  }
+
+
+});</code></pre></div><h2 id="support-struct-tags">Support struct tags<a href="#support-struct-tags" class="anchor">¶</a></h2><p>使用方法，再html标签上添加，vm=&quot;x:y&quot;, 如果有多个使用逗号分割，<br>详细的使用方法，可参考examples目录中的例子。</p>
+<p>支持的所有的标签功能:</p>
+<h3 id="html">html<a href="#html" class="anchor">¶</a></h3><p>使用 jQuery html() 读写节点内容</p>
+<h3 id="text">text<a href="#text" class="anchor">¶</a></h3><p>使用 jQuery text() 读写节点内容</p>
+<h3 id="css">css<a href="#css" class="anchor">¶</a></h3><p>绑定值的css属性列表，修改html style节点属性</p>
+<h3 id="val">val<a href="#val" class="anchor">¶</a></h3><p>读写from input的值</p>
+<h3 id="show">show<a href="#show" class="anchor">¶</a></h3><p>是否显示显示 html 元素标签, </p>
+<p>如果绑定的值 !!variable 是<code>true</code> 显示 <code>false</code> 隐藏</p>
+<h3 id="on">on<a href="#on" class="anchor">¶</a></h3><p>绑定HTML dom Event，用法，on:click=xxxFunc</p>
+<h3 id="for">for<a href="#for" class="anchor">¶</a></h3><p>循环显示数据， 如：</p>
+<div class="highlight"><pre><code class="xml">// 假如
+var userlist = [
+  {"name": "antoy", "age": 22},
+  {"name": "tom", "age": 23}
+];
+
+<span class="tag">&lt;<span class="title">ul</span> <span class="attribute">vm</span>=<span class="value">"for:userlist"</span>&gt;</span>
+  <span class="comment">&lt;!-- 
+  &lt;li&gt;
+    &lt;p&gt;索引：{$key}&lt;/p&gt;
+    &lt;p&gt;姓名：{$value.name}&lt;/p&gt;
+    &lt;p&gt;年龄：{$value.age}&lt;/p&gt;
+  &lt;/li&gt;
+  --&gt;</span>
+<span class="tag">&lt;/<span class="title">ul</span>&gt;</span></code></pre></div><p>userlist 可以是 array 或 json object，如果是array key为数字索引，<br>如果是 object， 则key为object key索引。</p>
 
   </div>
 </article>
@@ -81,4 +135,9 @@
       </footer>
     </div>
   </body>
+  <script src="./static/js/nprogress.js?nowrap"></script>
+  <script>
+  NProgress.start();
+  window.onload = NProgress.done;
+  </script>
 </html>

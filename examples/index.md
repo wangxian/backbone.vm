@@ -24,7 +24,17 @@
 <div id="container" vm-controller="box1">
   <h3>demo1:</h3>
   <div class="demo">
-    <div>Your name is <strong><!-- name -->jake</strong></div>
+    <ul>
+      <li>{{$key}}</li>
+      <!--
+      <% _.each(data, function(v,k){ %>
+      <tr class="<%= k%2===0?"":"white" %>">
+        <td><%= v.orderId %></td>
+      </tr>
+      <% }); %>
+      -->
+    </ul>
+    <div>Your name is <strong><!-- name --></strong></div>
     <p>Please input your name: </p>
     <p><input type="text" vm-val="name" value="jake" /></p>
   </div>

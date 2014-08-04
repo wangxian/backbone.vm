@@ -11,25 +11,23 @@
     <link rel="stylesheet" href="../static/css/site.css" />
     <link rel="stylesheet" href="../static/css/solarized.css" />
 <script>
+if (!location.port) {
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
   ga('create', 'UA-50522089-2', 'spm documentation');
   ga('send', 'pageview');
+}
 </script>
-<script src="../sea-modules/seajs/2.2.1/dist/sea.js?nowrap"></script>
+
+<script src="http://static.alipayobjects.com/seajs/seajs/2.2.0/sea.js"></script>
 
 <script>
-  (function() {
   seajs.config({
-    base: "../"
-  });
-
-  seajs.config({
+    base: "../",
     alias: {"backbone":"sea-modules/backbone/1.1.2/backbone.js","expect":"sea-modules/expect/0.3.1/index.js","expect.js":"sea-modules/expect.js/0.3.1/index.js","jquery":"sea-modules/jquery/1.10.2/jquery.js","seajs":"sea-modules/seajs/2.2.1/dist/sea.js","underscore":"sea-modules/underscore/1.6.0/underscore.js"}
   });
-})();
 </script>
     <!--[if lt IE 9]>
     <script src="../static/js/html5shiv.js"></script>
@@ -42,7 +40,7 @@
           <a href="../">Backbone.vm.js</a>
       </h1>
         <p class="sidebar-version">Version: <a href="http://spmjs.io/package/backbone.vm.js" title="">1.0.0</a></p>
-        <p class="sidebar-description" data-keyword="">A MVVM plugin for backbone</p>
+        <p class="sidebar-description" data-keyword="">A VM plugin for backbone</p>
         <a class="sidebar-source" href="http:////github.com/wangxian/backbone.vm.js" target="_blank">View the Project</a>
         <ul class="sidebar-navigation" role="navigation">
           <li><a href="../">Doc</a></li>
@@ -80,7 +78,17 @@
 <div id="container" vm-controller="box1">
   <h3>demo1:</h3>
   <div class="demo">
-    <div>Your name is <strong><!-- name -->jake</strong></div>
+    <ul>
+      <li>{{$key}}</li>
+      <!--
+      <% _.each(data, function(v,k){ %>
+      <tr class="<%= k%2===0?"":"white" %>">
+        <td><%= v.orderId %></td>
+      </tr>
+      <% }); %>
+      -->
+    </ul>
+    <div>Your name is <strong><!-- name --></strong></div>
     <p>Please input your name: </p>
     <p><input type="text" vm-val="name" value="jake" /></p>
   </div>
@@ -109,4 +117,9 @@ seajs.use('backbone.vm', function(vm) {
       </footer>
     </div>
   </body>
+  <script src="../static/js/nprogress.js?nowrap"></script>
+  <script>
+  NProgress.start();
+  window.onload = NProgress.done;
+  </script>
 </html>
