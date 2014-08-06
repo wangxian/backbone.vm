@@ -2,7 +2,7 @@
 
 ---
 
-[![spm version](http://spmjs.io/badge/backbone.vm)](http://spmjs.io/package/backbone.vm)
+[![spm version](http://spmjs.io/badge/backbone.vm.js)](http://spmjs.io/package/backbone.vm.js)
 
 A VM plugin for Backbone.js
 
@@ -21,10 +21,12 @@ $ spm install backbone.vm --save
 ```html
 <div id="main">
   <form action="">
-    <label for="name">请输入姓名：</label>
-    <input id="name" type="text" name="name" 
-           vm="val:name, on:change=updateMe, on:click=showTips" />
-    您的姓名为：<span vm="html:name"></span>
+    <p>
+      <label for="name">请输入姓名：</label>
+      <input id="name" type="text" name="name" 
+             vm="val:name, on:change=updateMe, on:click=showTips" />
+    </p>
+    <p>您的姓名为：<span vm="html:name"></span></p>
   </form>
 </div>
 ```

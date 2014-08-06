@@ -19,7 +19,9 @@
   "spm": {
     "main": "backbone.vm.js",
     "dependencies": {
-      "jquery": "1.10.2"
+      "jquery": "1.10.2",
+      "backbone": "",
+      "underscore": ""
     },
     "devDependencies": {
       "expect.js": "0.3.1",

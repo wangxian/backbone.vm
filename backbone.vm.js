@@ -1,9 +1,16 @@
-var vm;
+// Backbone plugin
 
-var $ = require('jquery');
-// for test
-window.$ = $;
 
-// $("[vm-controller] strong").contents().first().replaceWith("new-word");
+var $        = require("jquery");
+var Backbone = require("backbone");
 
-module.exports = vm;
+var VM = {
+  extend: function() {
+
+  }
+};
+
+Backbone.VM = VM;
+window.Backbone = Backbone;
+
+module.exports = Backbone;
