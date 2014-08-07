@@ -10,10 +10,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/wangxian/backbone.vm.js.git"
+    "url": "git://github.com/wangxian/backbone.vm.git"
   },
   "bugs": {
-    "url": "https://github.com/wangxian/backbone.vm.js/issues"
+    "url": "https://github.com/wangxian/backbone.vm/issues"
   },
   "licenses": "MIT",
   "spm": {
