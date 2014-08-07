@@ -13,8 +13,8 @@ var VM = Backbone.VM = function(options) {
 
 _.extend(VM.prototype, {
 
-  // The default `tagName` of a View's element is `"div"`.
-  tagName: 'div',
+  // Store the relationship between Dom and model
+  attrs: null,
 
   scanAttrs: function() {
     console.info("scan all attributes");

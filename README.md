@@ -1,10 +1,10 @@
-# backbone.vm.js
+# backbone.vm
 
 ---
 
 [![spm version](http://spmjs.io/badge/backbone.vm.js)](http://spmjs.io/package/backbone.vm.js)
 
-A VM plugin for Backbone.js
+A VM plugin for backbone.js
 
 ---
 

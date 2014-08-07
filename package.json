@@ -1,5 +1,5 @@
 {
-  "name": "backbone.vm.js",
+  "name": "backbone.vm",
   "version": "1.0.0",
   "description": "A VM plugin for backbone",
   "keywords": [],
@@ -17,7 +17,7 @@
   },
   "licenses": "MIT",
   "spm": {
-    "main": "backbone.vm.js",
+    "main": "src/backbone.vm.js",
     "dependencies": {
       "jquery": "1.10.2",
       "backbone": "",
