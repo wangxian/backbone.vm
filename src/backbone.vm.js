@@ -1,4 +1,9 @@
-// Backbone plugin
+//  Backbone.vm.js 1.0.0
+
+//  (c) 2013-2014 wangxian, DocumentCloud and Investigative Reporters & Editors
+//  Backbone may be freely distributed under the MIT license.
+//  For all details and documentation:
+//  http://github.com/wangxian/backbone.vm
 
 
 var $ = require("jquery");
@@ -35,3 +40,4 @@ VM.extend = Backbone.View.extend;
 // Return a CMD module from seajs,
 // It must be loaded after backbone.js
 module.exports = Backbone;
+
