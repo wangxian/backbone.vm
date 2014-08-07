@@ -25,35 +25,39 @@
 define("main", function(require, exports, module){
   var $        = require("jquery");
   var Backbone = require("backbone.vm");
+  
+  // for test
+  window.$ = $;
   window.Backbone = Backbone;
+  
+  console.dir(new (Backbone.VM.extend({"id":12})) )
   
   // console.log(jQuery);
   
-  // // for test
-  // window.$ = $;
+  
 
-  var MainApp = Backbone.VM.extend({
+  // var MainApp = Backbone.VM.extend({
 
-    // Bind Dom id, Control of the scope of the VM
-    // So, you can define some VM object
-    el: "#main",
+  //   // Bind Dom id, Control of the scope of the VM
+  //   // So, you can define some VM object
+  //   el: "#main",
     
-    // At initialization we do something
-    initialize: function() {
-      // do something...
-    },
+  //   // At initialization we do something
+  //   initialize: function() {
+  //     // do something...
+  //   },
     
-    // when vm.name changed
-    updateMe: function() {
+  //   // when vm.name changed
+  //   updateMe: function() {
     
-    },
+  //   },
     
-    // when input[name] click, do this function
-    showTips: function(e) {
-      // modify name's value
-      this.vm.set("name", "xxxxx");
-    }
-  });
+  //   // when input[name] click, do this function
+  //   showTips: function(e) {
+  //     // modify name's value
+  //     this.vm.set("name", "xxxxx");
+  //   }
+  // });
   
   
 });
