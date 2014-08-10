@@ -17,16 +17,34 @@ var vmAttrStripper = /\s+/g;
 
 // Handle all struct vm attribute tags,
 // eg: html, text, on...
-var vmhooks = {
+var VMhooks = {
   // VM->DOM, text, html...
-  simple: function(node, func) {
-    return function(str) { node[func](str); };
+  simple: function(node, funcName) {
+    return function(str) { node[funcName](str); };
   },
 
   // DOM->VM, INPUT on change
-  simpleOnChange: function(vm, name) {
-    return function() { vm.set(name, this.value); };
+  simpleOnChange: function(model, name) {
+    return function() { model.set(name, this.value); };
+  },
+
+  // handle input radio
+  // { "vmid01": {"age":{"1": jQNodeWrapper }} }
+  radioList: {},
+  radio: function(cid, name) {
+    return function(value) {
+      var radios = VMhooks.radioList[cid][name];
+      value = value.toString();
+      for(var r in radios) {
+        if(r !== value) {
+          radios[r].checked = false;
+        } else {
+          radios[r].checked = true;
+        }
+      }
+    };
   }
+
 };
 
 // Create a plugin from backbone.js, Similar usage and backbone.view
@@ -81,9 +99,9 @@ _.extend(VM.prototype, {
     var it = this;
     this.$el.find("[vm]").each(function(k, node){
       // VM HTML DOM node
-      var vmNodeEL   = node.getAttribute("vm").replace(vmAttrStripper, "").split(",");
+      var vmNodeEl   = node.getAttribute("vm").replace(vmAttrStripper, "").split(",");
       var vmNodeName = node.nodeName;
-      _.each(vmNodeEL, function(v){
+      _.each(vmNodeEl, function(v){
         var arr = v.split(":");
         if(arr[0] === "on") {
 
@@ -94,11 +112,32 @@ _.extend(VM.prototype, {
         } else {
           // Bind VM -> DOM, for: text, val <-> vm model
           if(! it.attrs[ arr[1] ] ) it.attrs[ arr[1] ] = [];
-          it.attrs[ arr[1] ].push( vmhooks.simple( $(node), arr[0] ) );
+          if(node.type !== "radio") {
+            it.attrs[ arr[1] ].push( VMhooks.simple( $(node), arr[0] ) );
+          } else {
+            if(! VMhooks.radioList[it.cid] ) {
+              // radioList = { "vm1": {"age":{"1": jQNodeWrapper }} }
+              var ri = {}, rv = {};
+
+              ri[ node.value ] = node;
+              rv[ arr[1] ]     = ri;
+              VMhooks.radioList[it.cid] = rv;
+              console.log(VMhooks.radioList);
+
+              it.attrs[ arr[1] ].push( VMhooks.radio(it.cid, arr[1]) );
+            } else {
+              // radioList = { "vm1": {"age":{"1": jQNodeWrapper }} }
+              VMhooks.radioList[it.cid][ arr[1] ][node.value] = node;
+            }
+          }
 
           // Bind DOM -> VM, for: input on change
-          if(vmNodeName === "INPUT" && arr[0] === "val") {
-            $(node).on("change", vmhooks.simpleOnChange( it.vm, arr[1]) );
+          if( (vmNodeName === "INPUT" || vmNodeName === "SELECT") && arr[0] === "val") {
+            if(node.type !== "radio") {
+              $(node).on("change", VMhooks.simpleOnChange( it.vm, arr[1]) );
+            } else {
+              $(node).on("click", VMhooks.simpleOnChange( it.vm, arr[1]) );
+            }
           }
         }
 
