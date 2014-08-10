@@ -15,6 +15,20 @@ var vmOptions = ['el', 'defaults'];
 // Cached regex for stripping vm node attributes. space, \r \n
 var vmAttrStripper = /\s+/g;
 
+// Handle all struct vm attribute tags,
+// eg: html, text, on...
+var vmhooks = {
+  // VM->DOM, text, html...
+  simple: function(node, func) {
+    return function(str) { node[func](str); };
+  },
+
+  // DOM->VM, INPUT on change
+  simpleOnChange: function(vm, name) {
+    return function() { vm.set(name, this.value); };
+  }
+};
+
 // Create a plugin from backbone.js, Similar usage and backbone.view
 var VM = Backbone.VM = function(options) {
   this.cid = _.uniqueId('vm');
@@ -65,12 +79,11 @@ _.extend(VM.prototype, {
   // Scan html dom attribute contains vm="*"
   scanAttrs: function() {
     var it = this;
-
-    var $vmAttrs = this.$el.find("[vm]");
-    $vmAttrs.each(function(k, node){
-      // VM HTML node
-      var vmNode = node.getAttribute("vm").replace(vmAttrStripper, "").split(",");
-      _.each(vmNode, function(v){
+    this.$el.find("[vm]").each(function(k, node){
+      // VM HTML DOM node
+      var vmNodeEL   = node.getAttribute("vm").replace(vmAttrStripper, "").split(",");
+      var vmNodeName = node.nodeName;
+      _.each(vmNodeEL, function(v){
         var arr = v.split(":");
         if(arr[0] === "on") {
 
@@ -79,17 +92,14 @@ _.extend(VM.prototype, {
         } else if(arr[0] === "for") {
 
         } else {
-          // html, text, val...
+          // Bind VM -> DOM, for: text, val <-> vm model
           if(! it.attrs[ arr[1] ] ) it.attrs[ arr[1] ] = [];
+          it.attrs[ arr[1] ].push( vmhooks.simple( $(node), arr[0] ) );
 
-          //@TODO: 可优化，编译模板
-          it.attrs[ arr[1] ].push(
-            (function(node, funcName){
-              return function(value) {
-                node[funcName](value);
-              };
-            })( $(node), arr[0] )
-          );
+          // Bind DOM -> VM, for: input on change
+          if(vmNodeName === "INPUT" && arr[0] === "val") {
+            $(node).on("change", vmhooks.simpleOnChange( it.vm, arr[1]) );
+          }
         }
 
       });

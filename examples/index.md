@@ -8,21 +8,16 @@
 
 <div id="main">
   <form action="">
-    <h3><label for="nickname">请输入姓名：</label><h3>
+    <h3><label for="nickname">请输入姓名：</label></h3>
     <p>
       <input id="nickname" type="text" name="nickname" 
-            vm="val:nickname, 
-                 on:change=updateMe, 
-                 on:click=showTips" />
+             vm="val:nickname, 
+                  on:change=updateMe, 
+                  on:click=showTips" />
     </p>
     
-    <h3>您的姓名为：</h3>
-    
-    1. 使用html绑定
-    <p vm="html:nickname">--</p>
-    
-    2. 使用text绑定
-    <p vm="text:nickname">--</p>
+    <p>您的姓名为：<em vm="html:nickname"></em></p>
+    <p>您的年龄：<em vm="html:age"></em></p>
     
   </form>
 </div>
@@ -33,7 +28,7 @@ define("main", function(require, exports, module){
   var Backbone = require("src/backbone.vm");
   
   // for test
-  window.$ = $;
+  window.$        = $;
   window.Backbone = Backbone;
   
   // console.dir(new (Backbone.VM.extend({"id":12})) )
@@ -44,7 +39,8 @@ define("main", function(require, exports, module){
     
     // default vm value
     defaults: {
-      "nickname": "<b>antony</b>",
+      "nickname": "木頭",
+      "age"     : 99,
       "friends" : ["sa", "sb", "sc"]
     },
 
