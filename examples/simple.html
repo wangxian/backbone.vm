@@ -51,11 +51,13 @@
       <label><input type="radio" name="age-radio" vm="val:age" value="99" /> 99</label>&nbsp;&nbsp;
     </p>
 
-    <h3>Your friends:</h3>
+    <h3>请选择你的朋友:</h3>
     <p>
       <label><input type="checkbox" name="friends" vm="val:friends" value="sa" /> sa</label>&nbsp;&nbsp;
       <label><input type="checkbox" name="friends" vm="val:friends" value="sb" /> sb</label>&nbsp;&nbsp;
       <label><input type="checkbox" name="friends" vm="val:friends" value="sc" /> sc</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="friends" vm="val:friends" value="sd" /> sd</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="friends" vm="val:friends" value="se" /> se</label>&nbsp;&nbsp;
     </p>
 
     <p>您的朋友：<em vm="text:friends"></em></p>
@@ -82,7 +84,7 @@ define("main", function(require, exports, module){
 
     // default vm value
     defaults: {
-      "nickname": "木頭",
+      "nickname": "wang xian",
       "age"     : 99,
       "friends" : ["sa", "sb", "sc"]
     },

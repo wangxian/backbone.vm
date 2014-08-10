@@ -18,17 +18,38 @@ var vmAttrStripper = /\s+/g;
 // Handle all struct vm attribute tags,
 // eg: html, text, on...
 var VMhooks = {
-  // VM->DOM, text, html...
+  // VM->DOM, text, html, val...
   simple: function(node, funcName) {
     return function(str) { node[funcName](str); };
   },
 
-  // DOM->VM, INPUT on change
+  // DOM->VM, INPUT(except checkbox) on change
   simpleOnChange: function(model, name) {
     return function() { model.set(name, this.value); };
   },
 
-  // handle input radio
+  // DOM->VM, checkbox on click
+  checkboxOnClick: function(model, name) {
+    return function() {
+      var checkboxList = model.get(name);
+      var checked = this.checked;
+      var value   = this.value;
+      if(! _.isArray(checkboxList)) checkboxList = [];
+      // if(_.contains(checkboxList, this.value)) {
+      //   if(this.checked)
+      // }
+      if(!checked){
+        checkboxList = _.filter(checkboxList, function(num){ return num !== value; });
+      } else {
+        checkboxList.push(value);
+      }
+      model.set(name, [], {silent: true});
+      model.set(name, checkboxList);
+    };
+  },
+
+  // VM->DOM, radio
+  // Handle input radio
   radio: function(radios) {
     return function(value) {
       value = value.toString();
@@ -37,6 +58,21 @@ var VMhooks = {
           radios[r].checked = false;
         } else {
           radios[r].checked = true;
+        }
+      }
+    };
+  },
+
+  // VM->DOM, checkbox
+  // Handle input checkbox
+  checkbox: function(checkboxes) {
+    return function(arr) {
+      if(! _.isArray(arr)) return;
+      for(var r in checkboxes) {
+        if(! _.contains(arr, r) ) {
+          checkboxes[r].checked = false;
+        } else {
+          checkboxes[r].checked = true;
         }
       }
     };
@@ -53,6 +89,9 @@ var VM = Backbone.VM = function(options) {
   this.$el = $(this.el);
   this.scanAttrs();
 
+  // this.vm.on("all", function(){
+  //   console.log(arguments);
+  // });
   this.vm.on("change", this.updateVM, this);
   this.vm.set(this.defaults);
 
@@ -69,7 +108,7 @@ _.extend(VM.prototype, {
   $el: null,
 
   // Store the relationship between Dom and model
-  // eg, { "name":[{"$el": xx, ...}], ... }
+  // eg, { "nickname":[ function(){}, .... ]}
   attrs: {},
 
   // Default VM value
@@ -91,11 +130,11 @@ _.extend(VM.prototype, {
   // eg, this.vm.set("name", "tom")
   vm: new Backbone.Model(),
 
-  // Store input[type=radio] bind data
-  inputRadio: {},
-
-  // Store input[type=checkbox] bind data
-  inputCheckbox: {},
+  // Store input[type=radio] & input[type=checkbox] bind data
+  input: {
+    radio: {},
+    checkbox: {}
+  },
 
   // Scan html dom attribute contains vm="*"
   scanAttrs: function() {
@@ -103,7 +142,6 @@ _.extend(VM.prototype, {
     this.$el.find("[vm]").each(function(k, node){
       // VM HTML DOM node
       var vmNodeEl   = node.getAttribute("vm").replace(vmAttrStripper, "").split(",");
-      var vmNodeName = node.nodeName;
       _.each(vmNodeEl, function(v){
         var arr = v.split(":");
         var vmKey = arr[0];
@@ -117,29 +155,33 @@ _.extend(VM.prototype, {
         } else {
           // Bind VM -> DOM, for: text, val <-> vm model
           if(! it.attrs[ vmVal ] ) it.attrs[ vmVal ] = [];
-          if(node.type !== "radio") {
-            it.attrs[ vmVal ].push( VMhooks.simple( $(node), vmKey ) );
-          } else {
-            if(! it.inputRadio[vmVal] ) {
-              // inputRadio like { "age":{"1": Node }}
+          if(node.type === "radio" || node.type === "checkbox") {
+            if(! it.input[node.type][vmVal] ) {
+              // When it.input.[node.type][vmVal] is empty
+              // input.[node.type] like { "age":{"1": Node }}
               var ri = {};
               ri[ node.value ] = node;
-              it.inputRadio[ vmVal ] = ri;
-              // console.log(it.inputRadio);
+              it.input[node.type][ vmVal ] = ri;
+              // console.log(it.input[node.type]);
 
-              it.attrs[ vmVal ].push( VMhooks.radio( it.inputRadio[ vmVal ]) );
+              it.attrs[ vmVal ].push( VMhooks[node.type]( it.input[node.type][ vmVal ]) );
             } else {
-              // inputRadio like { "age":{"1": Node }}
-              it.inputRadio[ vmVal ][node.value] = node;
+              // input[node.type] like { "age":{"1": Node }}
+              it.input[node.type][ vmVal ][node.value] = node;
             }
+          } else {
+            // simple div,
+            it.attrs[ vmVal ].push( VMhooks.simple( $(node), vmKey ) );
           }
 
           // Bind DOM -> VM, for: input on change
-          if( (vmNodeName === "INPUT" || vmNodeName === "SELECT") && vmKey === "val") {
-            if(node.type !== "radio") {
-              $(node).on("change", VMhooks.simpleOnChange( it.vm, vmVal) );
-            } else {
+          if( (node.nodeName === "INPUT" || node.nodeName === "SELECT") && vmKey === "val") {
+            if(node.type === "radio") {
               $(node).on("click", VMhooks.simpleOnChange( it.vm, vmVal) );
+            } else if(node.type === "checkbox"){
+              $(node).on("click", VMhooks.checkboxOnClick( it.vm, vmVal) );
+            } else {
+              $(node).on("change", VMhooks.simpleOnChange( it.vm, vmVal) );
             }
           }
         }
