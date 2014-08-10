@@ -30,8 +30,8 @@
       <input id="nickname" type="text" name="nickname"
       vm="val:nickname, on:change=updateMe, on:click=showTips" />
     </p>
-
     <p>您的姓名为：<em vm="html:nickname"></em></p>
+
     <h3>选择年龄：</h3>
     <select name="age" id="age" vm="val:age">
       <option value="28">28</option>
@@ -50,6 +50,16 @@
       <label><input type="radio" name="age-radio" vm="val:age" value="32" /> 32</label>&nbsp;&nbsp;
       <label><input type="radio" name="age-radio" vm="val:age" value="99" /> 99</label>&nbsp;&nbsp;
     </p>
+
+    <h3>Your friends:</h3>
+    <p>
+      <label><input type="checkbox" name="friends" vm="val:friends" value="sa" /> sa</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="friends" vm="val:friends" value="sb" /> sb</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="friends" vm="val:friends" value="sc" /> sc</label>&nbsp;&nbsp;
+    </p>
+
+    <p>您的朋友：<em vm="text:friends"></em></p>
+
 
 
   </form>
@@ -79,7 +89,7 @@ define("main", function(require, exports, module){
 
     // Bind Dom id, Control of the scope of the VM
     // So, you can define some VM object
-    el: "#main",
+    el: "#main"
 
     // // At initialization we do something
     // initialize: function() {
