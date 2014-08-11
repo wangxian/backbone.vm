@@ -27,8 +27,7 @@
 
     <h3><label for="nickname">请输入姓名：</label></h3>
     <p>
-      <input id="nickname" type="text" name="nickname"
-      vm="val:nickname, on:change=updateMe, on:click=showTips" />
+      <input id="nickname" type="text" name="nickname" vm="val:nickname" />
     </p>
     <p>您的姓名为：<em vm="html:nickname"></em></p>
 
@@ -110,8 +109,12 @@ define("main", function(require, exports, module){
     // }
   });
 
-  // init new MainApp, for test
-  window.mainapp = new MainApp();
+  $(document).ready(function(){
+
+    // init new MainApp, for test
+    window.mainapp = new MainApp();
+
+  });
 });
 
 seajs.use("main");

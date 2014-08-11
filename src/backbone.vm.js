@@ -177,11 +177,11 @@ _.extend(VM.prototype, {
           // Bind DOM -> VM, for: input on change
           if( (node.nodeName === "INPUT" || node.nodeName === "SELECT") && vmKey === "val") {
             if(node.type === "radio") {
-              $(node).on("click", VMhooks.simpleOnChange( it.vm, vmVal) );
+              $(node).on("click", VMhooks.simpleOnChange( it.vm, vmVal ) );
             } else if(node.type === "checkbox"){
-              $(node).on("click", VMhooks.checkboxOnClick( it.vm, vmVal) );
+              $(node).on("click", VMhooks.checkboxOnClick( it.vm, vmVal ) );
             } else {
-              $(node).on("change", VMhooks.simpleOnChange( it.vm, vmVal) );
+              $(node).on("change", VMhooks.simpleOnChange( it.vm, vmVal ) );
             }
           }
         }
