@@ -22,11 +22,10 @@ $ spm install backbone.vm --save
 <div id="main">
   <form action="">
     <p>
-      <label for="name">请输入姓名：</label>
-      <input id="name" type="text" name="name" 
-             vm="val:name, on:change=updateMe, on:click=showTips" />
+      <label for="nickname">请输入姓名：</label>
+      <input id="nickname" type="text" name="nickname" vm="val:nickname" />
     </p>
-    <p>您的姓名为：<span vm="html:name"></span></p>
+    <p>您的姓名为：<span vm="text:nickname"></span></p>
   </form>
 </div>
 ```
@@ -41,23 +40,22 @@ var MainApp = Backbone.VM.extend({
   // So, you can define some VM object
   el: "#main",
   
+  // default vm value
+  defaults: {
+    "nickname": "wang xian",
+    "age"     : 99,
+    "friends" : ["sa", "sb", "sc"]
+  },
+  
   // At initialization we do something
   initialize: function() {
     // do something...
-  },
-  
-  // when vm.name changed
-  updateMe: function() {
-  
-  },
-  
-  // when input[name] click, do this function
-  showTips: function(e) {
-    // modify name's value
-    this.vm.set("name", "xxxxx");
   }
-  
-  
+});
+
+$(document).ready(function(){
+  // init new MainApp, for test
+  window.mainapp = new MainApp();
 });
 
 ```

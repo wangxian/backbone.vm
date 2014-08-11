@@ -19,6 +19,7 @@
   "spm": {
     "main": "src/backbone.vm.js",
     "dependencies": {
+      "seajs": "2.2.1",
       "jquery": "1.10.2",
       "backbone": "",
       "underscore": ""

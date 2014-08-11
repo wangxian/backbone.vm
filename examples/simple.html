@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>simple demo</title>
+  <title>simple demo - 4</title>
   <style>
   .demo { padding: 10px; background-color: #efefef; }
+  h1 { border-bottom: 2px solid #efefef; padding: 15px 0 8px 0; }
+  h2 { font-size: 18px; margin: 40px 0 10px 0; }
   </style>
-  <script src="/sea-modules/seajs/2.2.1/dist/sea.js"></script>
+  <script src="sea-debug.js?nowrap"></script>
 
   <script>
     seajs.config({
@@ -22,16 +24,16 @@
 
 
 <div id="main">
-  <h1>simple test</h1>
+  <h1>简单测试 - SIMPLE TEST</h1>
   <form action="" name="form1">
 
-    <h3><label for="nickname">请输入姓名：</label></h3>
+    <h2>请输入姓名：</h2>
     <p>
       <input id="nickname" type="text" name="nickname" vm="val:nickname" />
     </p>
     <p>您的姓名为：<em vm="html:nickname"></em></p>
 
-    <h3>选择年龄：</h3>
+    <h2>选择年龄：</h2>
     <select name="age" id="age" vm="val:age">
       <option value="28">28</option>
       <option value="29">29</option>
@@ -50,7 +52,7 @@
       <label><input type="radio" name="age-radio" vm="val:age" value="99" /> 99</label>&nbsp;&nbsp;
     </p>
 
-    <h3>请选择你的朋友:</h3>
+    <h2>请选择你的朋友:</h2>
     <p>
       <label><input type="checkbox" name="friends" vm="val:friends" value="sa" /> sa</label>&nbsp;&nbsp;
       <label><input type="checkbox" name="friends" vm="val:friends" value="sb" /> sb</label>&nbsp;&nbsp;
@@ -58,9 +60,7 @@
       <label><input type="checkbox" name="friends" vm="val:friends" value="sd" /> sd</label>&nbsp;&nbsp;
       <label><input type="checkbox" name="friends" vm="val:friends" value="se" /> se</label>&nbsp;&nbsp;
     </p>
-
     <p>您的朋友：<em vm="text:friends"></em></p>
-
 
 
   </form>
