@@ -96,12 +96,12 @@
       -->
     </ul>
 
-    <ol vm="for:userlist">
+    <ul vm="for:profile">
       <!--
-      <li>{$value.name}</p>
+      <li>{$key}={$value}</p>
       </li>
       -->
-    </ol>
+    </ul>
 
   </form>
 </div>
@@ -127,6 +127,12 @@ seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
       clickCount: 0,
       isShowText: false,
 
+
+      profile: {
+        name: "小星星",
+        age : 22,
+        nickname: "xianxian"
+      },
       userlist: [
         {"name": "antoy", "age": 18},
         {"name": "tom",   "age": 23},
