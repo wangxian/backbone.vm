@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>simple demo - 4</title>
+  <title>simple demo - 2014-08-12 14:21:14</title>
   <style>
   .demo { padding: 10px; background-color: #efefef; }
   h1 { border-bottom: 2px solid #efefef; padding: 15px 0 8px 0; }
@@ -81,9 +81,27 @@
       </div>
     </p>
     <p>
-      <button type="button" vm="on:click=showTips">show long text</button>
+      <button type="button" vm="on:click=showTips">show long text</button>&nbsp;&nbsp;
       <button type="button" vm="on:click=hideTips">hide long text</button>
     </p>
+
+    <h3>数据遍历</h3>
+    <ul vm="for:userlist">
+      <!--
+      <li>
+        <p>索引：{$key}</p>
+        <p>姓名：{$value.name}</p>
+        <p>年龄：{$value.age}</p>
+      </li>
+      -->
+    </ul>
+
+    <ol vm="for:userlist">
+      <!--
+      <li>{$value.name}</p>
+      </li>
+      -->
+    </ol>
 
   </form>
 </div>
@@ -107,7 +125,14 @@ seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
       friends : ["sa", "sb", "sc"],
 
       clickCount: 0,
-      isShowText: false
+      isShowText: false,
+
+      userlist: [
+        {"name": "antoy", "age": 18},
+        {"name": "tom",   "age": 23},
+        {"name": "jam",   "age": 42},
+        {"name": "wangzi","age": 28}
+      ]
     },
 
     // Bind Dom id, Control of the scope of the VM

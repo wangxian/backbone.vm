@@ -89,6 +89,33 @@ var VMhooks = {
       return _.bind(vmObj[funcName], vmObj);
     }
     return function(){};
+  },
+
+  forTemplate: function(node) {
+    var tpl   = node.innerHTML;
+    tpl = tpl.replace(/<!--|-->|\n|'|{|}/g, function(match){
+      if(match === "<!--"||match === "-->"||match === "\n") return "";
+      else if(match === "'") return "\\'";
+      else if(match === "{") return "'+";
+      else if(match === "}") return "+'";
+    });
+
+    var source = "var isArray = Array.isArray ? Array.isArray(obj) : Object.prototype.toString.call(obj) === '[object Array]';";
+    source += "var out = '';";
+    source += "if(isArray){ ";
+    source += "for(var $key=0,_len=obj.length;$key<_len;$key++){ var $value = obj[$key]; out += '"+ tpl +"'; }";
+    source += "} else {";
+    source += "for(var $key in obj){ var $value = obj[$key]; out += '"+ tpl +"'; }";
+    source += "}; return out;";
+    var render = new Function("obj", source);
+    // console.log(source);
+
+    return function(obj) {
+      var type = Object.prototype.toString.call(obj);
+      if(type === "[object Array]" || type === "[object Object]") {
+        node.innerHTML = render(obj);
+      }
+    };
   }
 
 };
@@ -166,7 +193,8 @@ _.extend(VM.prototype, {
         } else if(vmKey === "show") {
           it.attrs[ vmVal ] = [ VMhooks.show( $(node) ) ];
         } else if(vmKey === "for") {
-
+          if(! it.attrs[ vmVal ] ) it.attrs[ vmVal ] = [];
+          it.attrs[ vmVal ].push( VMhooks.forTemplate( node ) );
         } else {
           // Bind VM -> DOM, for: text, val <-> vm model
           if(! it.attrs[ vmVal ] ) it.attrs[ vmVal ] = [];
