@@ -28,6 +28,11 @@ var VMhooks = {
     return function() { model.set(name, this.value); };
   },
 
+  // Show HTML element if vm item is true or false
+  show: function(node) {
+    return function(isShow) { node[isShow?'show':'hide'](); };
+  },
+
   // DOM->VM, checkbox on click
   checkboxOnClick: function(model, name) {
     return function() {
@@ -159,7 +164,7 @@ _.extend(VM.prototype, {
           // console.log(ev);
           $(node).on( ev[0], VMhooks.bindEventListener(it, ev[1]));
         } else if(vmKey === "show") {
-
+          it.attrs[ vmVal ] = [ VMhooks.show( $(node) ) ];
         } else if(vmKey === "for") {
 
         } else {

@@ -71,14 +71,25 @@
     </p>
     <p>点击次数：<i vm="text:clickCount">-</i></p>
 
+    <h2>显示/隐藏 show</h2>
+    <p>
+      <div vm="show:isShowText">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+      </div>
+    </p>
+    <p>
+      <button type="button" vm="on:click=showTips">show long text</button>
+      <button type="button" vm="on:click=hideTips">hide long text</button>
+    </p>
+
   </form>
 </div>
 
 <script>
-define("main", function(require, exports, module){
-  var $        = require("jquery");
-  var Backbone = require("src/backbone.vm");
-
+seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
   // for test
   window.$        = $;
   window.Backbone = Backbone;
@@ -91,11 +102,12 @@ define("main", function(require, exports, module){
 
     // default vm value
     defaults: {
-      "nickname": "wang xian",
-      "age"     : 99,
-      "friends" : ["sa", "sb", "sc"],
+      nickname: "wang xian",
+      age     : 99,
+      friends : ["sa", "sb", "sc"],
 
-      "clickCount": 0
+      clickCount: 0,
+      isShowText: false
     },
 
     // Bind Dom id, Control of the scope of the VM
@@ -116,13 +128,12 @@ define("main", function(require, exports, module){
 
       var clickCount = this.vm.get("clickCount") + 1;
       this.vm.set("clickCount", clickCount );
-    }
+    },
 
-    // // when input[name] click, do this function
-    // showTips: function(e) {
-    //   // modify name's value
-    //   this.vm.set("name", "antony");
-    // }
+    // show and hide long tips
+    showTips: function(e) { this.vm.set("isShowText", true); },
+    hideTips: function(e) { this.vm.set("isShowText", false); }
+
   });
 
   $(document).ready(function(){
@@ -130,8 +141,6 @@ define("main", function(require, exports, module){
     window.mainapp = new MainApp();
   });
 });
-
-seajs.use("main");
 </script>
 
 </body>
