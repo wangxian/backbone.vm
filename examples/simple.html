@@ -7,6 +7,9 @@
   .demo { padding: 10px; background-color: #efefef; }
   h1 { border-bottom: 2px solid #efefef; padding: 15px 0 8px 0; }
   h2 { font-size: 18px; margin: 40px 0 10px 0; }
+  input,button,select,textarea{outline:none}
+  button { background-color: #FF8a00; padding: 8px 20px; color: white; border: 0; }
+  button:hover { background-color: #FFba00; }
   </style>
   <script src="sea-debug.js?nowrap"></script>
 
@@ -62,6 +65,11 @@
     </p>
     <p>您的朋友：<em vm="text:friends"></em></p>
 
+    <h2>事件测试 DOM Event bind</h2>
+    <p>
+      <button id="btn-click-me" type="button" vm="on:click=clickMe">点我+++++</button>
+    </p>
+    <p>点击次数：<i vm="text:clickCount">-</i></p>
 
   </form>
 </div>
@@ -85,22 +93,30 @@ define("main", function(require, exports, module){
     defaults: {
       "nickname": "wang xian",
       "age"     : 99,
-      "friends" : ["sa", "sb", "sc"]
+      "friends" : ["sa", "sb", "sc"],
+
+      "clickCount": 0
     },
 
     // Bind Dom id, Control of the scope of the VM
     // So, you can define some VM object
-    el: "#main"
+    el: "#main",
 
-    // // At initialization we do something
-    // initialize: function() {
-    //   // do something...
-    // },
+    // At initialization we do something
+    initialize: function() {
+      // do something...
+    },
 
-    // // when vm.name changed
-    // updateMe: function() {
+    // When click button#btn-click-me
+    clickMe: function(e) {
+      // console.log("this", this);
+      // console.log("e:", e);
+      // var _e = e.currentTarget;
+      // console.log(_e.type);
 
-    // },
+      var clickCount = this.vm.get("clickCount") + 1;
+      this.vm.set("clickCount", clickCount );
+    }
 
     // // when input[name] click, do this function
     // showTips: function(e) {
@@ -110,10 +126,8 @@ define("main", function(require, exports, module){
   });
 
   $(document).ready(function(){
-
     // init new MainApp, for test
     window.mainapp = new MainApp();
-
   });
 });
 

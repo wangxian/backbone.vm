@@ -76,6 +76,14 @@ var VMhooks = {
         }
       }
     };
+  },
+
+  // Bind html dom Event to VM function
+  bindEventListener: function(vmObj, funcName){
+    if(typeof vmObj[funcName] === "function") {
+      return _.bind(vmObj[funcName], vmObj);
+    }
+    return function(){};
   }
 
 };
@@ -147,7 +155,9 @@ _.extend(VM.prototype, {
         var vmKey = arr[0];
         var vmVal = arr[1];
         if(vmKey === "on") {
-
+          var ev = vmVal.split("=");
+          // console.log(ev);
+          $(node).on( ev[0], VMhooks.bindEventListener(it, ev[1]));
         } else if(vmKey === "show") {
 
         } else if(vmKey === "for") {
