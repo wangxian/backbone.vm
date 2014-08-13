@@ -2,8 +2,4 @@
 
 ---
 
-<style>
-.demo { padding: 10px; background-color: #efefef; }  
-</style>
-
-# demo
+- [simple demo](simple.html)

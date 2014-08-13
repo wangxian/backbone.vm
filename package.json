@@ -1,5 +1,5 @@
 {
-  "name": "backbone.vm.js",
+  "name": "backbone.vm",
   "version": "1.0.0",
   "description": "A VM plugin for backbone",
   "keywords": [],
@@ -10,16 +10,19 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/wangxian/backbone.vm.js.git"
+    "url": "git://github.com/wangxian/backbone.vm.git"
   },
   "bugs": {
-    "url": "https://github.com/wangxian/backbone.vm.js/issues"
+    "url": "https://github.com/wangxian/backbone.vm/issues"
   },
   "licenses": "MIT",
   "spm": {
-    "main": "backbone.vm.js",
+    "main": "src/backbone.vm.js",
     "dependencies": {
-      "jquery": "1.10.2"
+      "seajs": "2.2.1",
+      "jquery": "1.10.2",
+      "backbone": "",
+      "underscore": ""
     },
     "devDependencies": {
       "expect.js": "0.3.1",

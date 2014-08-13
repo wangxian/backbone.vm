@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>simple demo - 2014-08-12 14:21:14</title>
+  <style>
+  .demo { padding: 10px; background-color: #efefef; }
+  h1 { border-bottom: 2px solid #efefef; padding: 15px 0 8px 0; }
+  h2 { font-size: 18px; margin: 40px 0 10px 0; }
+  input,button,select,textarea{outline:none}
+  button { background-color: #FF8a00; padding: 8px 20px; color: white; border: 0; }
+  button:hover { background-color: #FFba00; }
+  pre { background-color: #EFEFEF; padding: 10px 0; }
+  </style>
+  <script src="sea-debug.js?nowrap"></script>
+
+  <script>
+    seajs.config({
+      base: "../",
+      alias: {"backbone":"sea-modules/backbone/1.1.2/backbone.js","expect":"sea-modules/expect/0.3.1/index.js","expect.js":"sea-modules/expect.js/0.3.1/index.js","jquery":"sea-modules/jquery/1.10.2/jquery.js","seajs":"sea-modules/seajs/2.2.1/dist/sea.js","underscore":"sea-modules/underscore/1.6.0/underscore.js"}
+    });
+  </script>
+  <!--[if lt IE 9]>
+  <script src="../static/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+
+
+<div id="main">
+  <h1>简单测试 - SIMPLE TEST</h1>
+
+  <form action="" name="form1">
+
+    <h2>请输入姓名：</h2>
+    <p>
+      <input id="nickname" type="text" name="nickname" vm="val:nickname" />
+    </p>
+    <p>您的姓名为：<em vm="html:nickname"></em></p>
+
+    <h2>选择年龄：</h2>
+    <select name="age" id="age" vm="val:age">
+      <option value="28">28</option>
+      <option value="29">29</option>
+      <option value="30">30</option>
+      <option value="31">31</option>
+      <option value="32">32</option>
+      <option value="99">99</option>
+    </select>
+    <p>您的年龄为：<em vm="text:age"></em></p>
+    <p>
+      <label><input type="radio" name="age-radio" vm="val:age" value="28" /> 28</label>&nbsp;&nbsp;
+      <label><input type="radio" name="age-radio" vm="val:age" value="29" /> 29</label>&nbsp;&nbsp;
+      <label><input type="radio" name="age-radio" vm="val:age" value="30" /> 30</label>&nbsp;&nbsp;
+      <label><input type="radio" name="age-radio" vm="val:age" value="31" /> 31</label>&nbsp;&nbsp;
+      <label><input type="radio" name="age-radio" vm="val:age" value="32" /> 32</label>&nbsp;&nbsp;
+      <label><input type="radio" name="age-radio" vm="val:age" value="99" /> 99</label>&nbsp;&nbsp;
+    </p>
+
+    <h2>请选择你的朋友:</h2>
+    <p>
+      <label><input type="checkbox" name="friends" vm="val:friends" value="sa" /> sa</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="friends" vm="val:friends" value="sb" /> sb</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="friends" vm="val:friends" value="sc" /> sc</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="friends" vm="val:friends" value="sd" /> sd</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="friends" vm="val:friends" value="se" /> se</label>&nbsp;&nbsp;
+    </p>
+    <p>您的朋友：<em vm="text:friends"></em></p>
+
+    <h2>事件测试 DOM Event bind</h2>
+    <p>
+      <button id="btn-click-me" type="button" vm="on:click=clickMe">点我+++++</button>
+    </p>
+    <p>点击次数：<i vm="text:clickCount">-</i></p>
+
+    <h2>显示/隐藏 show</h2>
+    <p>
+      <div vm="show:isShowText">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+      </div>
+    </p>
+    <p>
+      <button type="button" vm="on:click=showTips">show long text</button>&nbsp;&nbsp;
+      <button type="button" vm="on:click=hideTips">hide long text</button>
+    </p>
+
+    <h3>数据遍历</h3>
+    <pre><code>
+    // 数组测试
+    // 假如数据结构如下：
+    userlist = [
+      {"name": "antoy", "age": 18},
+      {"name": "tom",   "age": 23},
+      {"name": "jam",   "age": 42},
+      {"name": "wangzi","age": 28}
+    ]
+    </code></pre>
+    <ul vm="for:userlist">
+      <!--
+      <li>
+        <p>索引：{$key}</p>
+        <p>姓名：{$value.name}</p>
+        <p>年龄：{$value.age}</p>
+      </li>
+      -->
+    </ul>
+
+    <pre><code>
+    // JSON Object对象测试
+    // 假如数据结构如下：
+    profile = {
+      name: "西门吹雪",
+      age : 22,
+      nickname: "西门"
+    }
+    </code></pre>
+    <ul vm="for:profile">
+      <!--
+      <li>{$key}={$value}</p>
+      </li>
+      -->
+    </ul>
+
+  </form>
+</div>
+
+<script>
+seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
+  // for test
+  window.$        = $;
+  window.Backbone = Backbone;
+
+  // console.dir(new (Backbone.VM.extend({"id":12})) )
+
+  // console.log(jQuery);
+
+  var MainApp = Backbone.VM.extend({
+
+    // default vm value
+    defaults: {
+      nickname: "wang xian",
+      age     : 99,
+      friends : ["sa", "sb", "sc"],
+
+      clickCount: 0,
+      isShowText: false,
+
+
+      profile: {
+        name: "西门吹雪",
+        age : 22,
+        nickname: "西门"
+      },
+      userlist: [
+        {"name": "antoy", "age": 18},
+        {"name": "tom",   "age": 23},
+        {"name": "jam",   "age": 42},
+        {"name": "wangzi","age": 28}
+      ]
+    },
+
+    // Bind Dom id, Control of the scope of the VM
+    // So, you can define some VM object
+    el: "#main",
+
+    // At initialization we do something
+    initialize: function() {
+      // do something...
+    },
+
+    // When click button#btn-click-me
+    clickMe: function(e) {
+      // console.log("this", this);
+      // console.log("e:", e);
+      // var _e = e.currentTarget;
+      // console.log(_e.type);
+
+      var clickCount = this.vm.get("clickCount") + 1;
+      this.vm.set("clickCount", clickCount );
+    },
+
+    // show and hide long tips
+    showTips: function(e) { this.vm.set("isShowText", true); },
+    hideTips: function(e) { this.vm.set("isShowText", false); }
+
+  });
+
+  $(document).ready(function(){
+    // init new MainApp, for test
+    window.mainapp = new MainApp();
+  });
+});
+</script>
+
+</body>
+</html>
