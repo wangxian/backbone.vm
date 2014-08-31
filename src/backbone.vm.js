@@ -23,14 +23,19 @@ var VMhooks = {
     return function(str) { node[funcName](str); };
   },
 
-  // DOM->VM, INPUT(except checkbox) on change
+  // DOM->VM, INPUT(except checkbox/radio) on change
   simpleOnChange: function(model, name) {
     return function() { model.set(name, this.value); };
   },
 
-  // Show HTML element if vm item is true or false
+  // Show/Hide HTML element if vm item is true or false
   show: function(node) {
     return function(isShow) { node[isShow?'show':'hide'](); };
+  },
+
+  // Remove HTML element if vm item value is true
+  remove: function(node) {
+    return function(isRemoved) { if(isRemoved) node.remove(); };
   },
 
   // DOM->VM, checkbox on click
@@ -186,16 +191,20 @@ _.extend(VM.prototype, {
         var arr = v.split(":");
         var vmKey = arr[0];
         var vmVal = arr[1];
+
         if(vmKey === "on") {
           var ev = vmVal.split("=");
           // console.log(ev);
           $(node).on( ev[0], VMhooks.bindEventListener(it, ev[1]));
         } else if(vmKey === "show") {
           it.attrs[ vmVal ] = [ VMhooks.show( $(node) ) ];
+        } else if(vmKey === "remove") {
+          it.attrs[ vmVal ] = [ VMhooks.remove( $(node) ) ];
         } else if(vmKey === "for") {
           if(! it.attrs[ vmVal ] ) it.attrs[ vmVal ] = [];
           it.attrs[ vmVal ].push( VMhooks.forTemplate( node ) );
         } else {
+
           // Bind VM -> DOM, for: text, val <-> vm model
           if(! it.attrs[ vmVal ] ) it.attrs[ vmVal ] = [];
           if(node.type === "radio" || node.type === "checkbox") {
