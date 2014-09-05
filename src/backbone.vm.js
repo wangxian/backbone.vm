@@ -132,12 +132,13 @@ var VM = Backbone.VM = function(options) {
   _.extend(this, _.pick(options, vmOptions));
 
   this.$el = $(this.el);
-  this.scanAttrs();
+  this._scanAttrs();
 
   // this.vm.on("all", function(){
   //   console.log(arguments);
   // });
-  this.vm.on("change", this.updateVM, this);
+  this.vm = new Backbone.Model();
+  this.vm.on("change", this._updateVM, this);
   this.vm.set(this.defaults);
 
   this.initialize.apply(this, arguments);
@@ -160,7 +161,7 @@ _.extend(VM.prototype, {
   defaults: {},
 
   // Update VM bind node when vm model is updated
-  updateVM: function(model) {
+  _updateVM: function(model) {
     // console.info("model updated:", model.changed, model.toJSON());
     var it = this;
     var attrs = _.pick(this.attrs, _.keys(model.changed));
@@ -173,7 +174,7 @@ _.extend(VM.prototype, {
 
   // VM's model, Your app can use it to set VM value
   // eg, this.vm.set("name", "tom")
-  vm: new Backbone.Model(),
+  vm: null,
 
   // Store input[type=radio] & input[type=checkbox] bind data
   input: {
@@ -182,7 +183,7 @@ _.extend(VM.prototype, {
   },
 
   // Scan html dom attribute contains vm="*"
-  scanAttrs: function() {
+  _scanAttrs: function() {
     var it = this;
     this.$el.find("[vm]").each(function(k, node){
       // VM HTML DOM node
@@ -240,6 +241,12 @@ _.extend(VM.prototype, {
 
       });
     });
+  },
+
+  // destory VM object when a new vm is not used
+  // @todo ...
+  destroy: function() {
+
   },
 
 

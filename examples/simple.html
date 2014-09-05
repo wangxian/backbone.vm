@@ -109,7 +109,7 @@
     <pre><code>
     // 数组测试
     // 假如数据结构如下：
-    userlist = [
+    var userlist = [
       {"name": "antoy", "age": 18},
       {"name": "tom",   "age": 23},
       {"name": "jam",   "age": 42},
@@ -189,7 +189,7 @@ seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
     // At initialization we do something
     initialize: function() {
       // do something...
-      this.vm.on("change:age", function(){
+      this.vm.on("change", function(){
         console.log(arguments);
       })
     },
