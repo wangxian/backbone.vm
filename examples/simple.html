@@ -190,7 +190,7 @@ seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
     // At initialization we do something
     initialize: function() {
       // do something...
-      this.vm.on("change", function(){
+      this.vm.on("all", function(){
         console.log(arguments);
       });
     },
@@ -203,22 +203,23 @@ seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
       // console.log(_e.type);
 
       var clickCount = this.vm.get("clickCount") + 1;
-      this.vm.set("clickCount", clickCount );
+      this.vm.update("clickCount", clickCount );
     },
 
     // bind button || delete user
-    deleteUser: function(e) {
-      console.log("this", this);
-      console.log("e:", e);
+    deleteUser: function(e, key) {
+      // console.log("this->", this);
+      // console.log("e:", e);
+      // console.log("key->", key);
 
-      var _e = e.currentTarget;
-      console.log(_e.type);
+      this.vm.update("userlist["+ key +"].name", "Hubon");
+      // console.log(this.vm.get("userlist"));
     },
 
     // show/hide/remove long tips
-    showTips: function(e) { this.vm.set("isShowText", true); },
-    hideTips: function(e) { this.vm.set("isShowText", false); },
-    removeTips: function(e) { this.vm.set("isRemoved", true); }
+    showTips: function(e) { this.vm.update("isShowText", true); },
+    hideTips: function(e) { this.vm.update("isShowText", false); },
+    removeTips: function(e) { this.vm.update("isRemoved", true); }
 
   });
 
