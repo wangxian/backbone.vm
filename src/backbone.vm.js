@@ -15,6 +15,13 @@ var vmOptions = ["el", "defaults"];
 // Cached regex for stripping vm node attributes. space, \r \n
 var vmAttrStripper = /\s+/g;
 
+// for:stuct replace && clear template string
+var forTplReplaceStripper = /<!--|-->|\n|'|{|}/g;
+
+// for:struct match dom bind setting string
+var forTplOnStripper = /on:(\w+)=(\w+)/;
+
+
 // Handle all struct vm attribute tags,
 // eg: html, text, on...
 var VMhooks = {
@@ -97,9 +104,9 @@ var VMhooks = {
   },
 
   forTemplate: function(node) {
-    var tpl   = node.innerHTML;
-    tpl = tpl.replace(/<!--|-->|\n|'|{|}/g, function(match){
-      if(match === "<!--"||match === "-->"||match === "\n") return "";
+    var tpl = node.innerHTML;
+    tpl = tpl.replace(forTplReplaceStripper, function(match){
+      if(match === "<!--" || match === "-->" || match === "\n") return "";
       else if(match === "'") return "\\'";
       else if(match === "{") return "'+";
       else if(match === "}") return "+'";
@@ -132,12 +139,12 @@ var VM = Backbone.VM = function(options) {
   _.extend(this, _.pick(options, vmOptions));
 
   this.$el = $(this.el);
+  this.vm  = new Backbone.Model();
   this._scanAttrs();
 
   // this.vm.on("all", function(){
   //   console.log(arguments);
   // });
-  this.vm = new Backbone.Model();
   this.vm.on("change", this._updateVM, this);
   this.vm.set(this.defaults);
 
@@ -160,6 +167,20 @@ _.extend(VM.prototype, {
   // Default VM value
   defaults: {},
 
+  // Initialize is an empty function by default. Override it with your own
+  // initialization logic.
+  initialize: function() {},
+
+  // VM's model, Your app can use it to set VM value
+  // eg, this.vm.set("name", "tom")
+  vm: null,
+
+  // Store input[type=radio] & input[type=checkbox] bind data
+  input: {
+    radio: {},
+    checkbox: {}
+  },
+
   // Update VM bind node when vm model is updated
   _updateVM: function(model) {
     // console.info("model updated:", model.changed, model.toJSON());
@@ -170,16 +191,6 @@ _.extend(VM.prototype, {
         func(it.vm.get(k));
       });
     });
-  },
-
-  // VM's model, Your app can use it to set VM value
-  // eg, this.vm.set("name", "tom")
-  vm: null,
-
-  // Store input[type=radio] & input[type=checkbox] bind data
-  input: {
-    radio: {},
-    checkbox: {}
   },
 
   // Scan html dom attribute contains vm="*"
@@ -196,12 +207,18 @@ _.extend(VM.prototype, {
         if(vmKey === "on") {
           var ev = vmVal.split("=");
           // console.log(ev);
-          $(node).on( ev[0], VMhooks.bindEventListener(it, ev[1]));
+          $(node).on( ev[0], VMhooks.bindEventListener(it, ev[1]) ).attr("vm-dombind", "");
         } else if(vmKey === "show") {
           it.attrs[ vmVal ] = [ VMhooks.show( $(node) ) ];
         } else if(vmKey === "remove") {
           it.attrs[ vmVal ] = [ VMhooks.remove( $(node) ) ];
         } else if(vmKey === "for") {
+          // bind for:struct dom event
+          var bindInfo = node.innerHTML.match(forTplOnStripper);
+          if(!!bindInfo) {
+            $(node).on( bindInfo[1], "[vm-dombind]", VMhooks.bindEventListener(it, bindInfo[2]) ).attr("vm-dombind", "");
+          }
+
           if(! it.attrs[ vmVal ] ) it.attrs[ vmVal ] = [];
           it.attrs[ vmVal ].push( VMhooks.forTemplate( node ) );
         } else {
@@ -230,11 +247,11 @@ _.extend(VM.prototype, {
           // Bind DOM -> VM, for: input on change
           if( (node.nodeName === "INPUT" || node.nodeName === "SELECT") && vmKey === "val") {
             if(node.type === "radio") {
-              $(node).on("click", VMhooks.simpleOnChange( it.vm, vmVal ) );
+              $(node).on("click", VMhooks.simpleOnChange( it.vm, vmVal ) ).attr("vm-dombind", "");
             } else if(node.type === "checkbox"){
-              $(node).on("click", VMhooks.checkboxOnClick( it.vm, vmVal ) );
+              $(node).on("click", VMhooks.checkboxOnClick( it.vm, vmVal ) ).attr("vm-dombind", "");
             } else {
-              $(node).on("change", VMhooks.simpleOnChange( it.vm, vmVal ) );
+              $(node).on("change", VMhooks.simpleOnChange( it.vm, vmVal ) ).attr("vm-dombind", "");
             }
           }
         }
@@ -244,15 +261,13 @@ _.extend(VM.prototype, {
   },
 
   // destory VM object when a new vm is not used
+  // clear vm variable, unbind dom delegate
   // @todo ...
   destroy: function() {
-
-  },
-
-
-  // Initialize is an empty function by default. Override it with your own
-  // initialization logic.
-  initialize: function() {}
+    this.$el.find("[vm-dombind]").off();
+    this.$el = null;
+    this.vm = null;
+  }
 
 });
 

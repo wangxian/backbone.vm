@@ -122,6 +122,7 @@
         <p>索引：{$key}</p>
         <p>姓名：{$value.name}</p>
         <p>年龄：{$value.age}</p>
+        <p><button type="button" vm="on:click=deleteUser">删除</button></p>
       </li>
       -->
     </ul>
@@ -191,7 +192,7 @@ seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
       // do something...
       this.vm.on("change", function(){
         console.log(arguments);
-      })
+      });
     },
 
     // When click button#btn-click-me
@@ -203,6 +204,15 @@ seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
 
       var clickCount = this.vm.get("clickCount") + 1;
       this.vm.set("clickCount", clickCount );
+    },
+
+    // bind button || delete user
+    deleteUser: function(e) {
+      console.log("this", this);
+      console.log("e:", e);
+
+      var _e = e.currentTarget;
+      console.log(_e.type);
     },
 
     // show/hide/remove long tips
