@@ -122,7 +122,8 @@
         <p>索引：{$key}</p>
         <p>姓名：{$value.name}</p>
         <p>年龄：{$value.age}</p>
-        <p><button type="button" vm="on:click=deleteUser">删除</button></p>
+        <p><button type="button" vm="on:click=deleteUser">delete</button></p>
+        <p><button type="button" vm="on:click=updateAge">update user age</button></p>
       </li>
       -->
     </ul>
@@ -212,8 +213,26 @@ seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
       // console.log("e:", e);
       // console.log("key->", key);
 
-      this.vm.update("userlist["+ key +"].name", "Hubon");
-      // console.log(this.vm.get("userlist"));
+      // re-render list
+      var userlist = this.vm.read("userlist");
+      userlist.splice(key, 1);
+      this.vm.update("userlist", userlist);
+
+      // only delete itself
+      // var userlist = this.vm.read("userlist");
+      // userlist.splice(key, 1);
+      // this.vm.update("userlist", userlist, {silent: true});
+
+      // $(e.currentTarget).parent().parent().remove();
+    },
+
+    updateAge: function(e, key) {
+      var age = this.vm.read("userlist["+ key +"].age");
+      // Both equivalent
+      // var age = this.vm.get("userlist")[key].age;
+
+      age++;
+      this.vm.update("userlist["+ key +"].age", age);
     },
 
     // show/hide/remove long tips

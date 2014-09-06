@@ -19,7 +19,7 @@ var vmAttrStripper = /\s+/g;
 var forTplReplaceStripper = /<!--|-->|\n|'|{|}/g;
 
 // for:struct match dom bind setting string
-var forTplOnStripper = /on:(\w+)=(\w+)/;
+var forTplOnStripper = /on:(\w+)=(\w+)/g;
 
 
 // Handle all struct vm attribute tags,
@@ -121,7 +121,7 @@ var VMhooks = {
       else if(match === "'") return "\\'";
       else if(match === "{") return "'+";
       else if(match === "}") return "+'";
-    }).replace(/vm="[^"]+/g, 'vm-forkey="\'+ $key +\'"');
+    }).replace(/vm="on:\w+=(\w+)"+/g, 'vm-forkey-$1="true" vm-forkey="\'+ $key +\'"');
 
     var source = "var isArray = Array.isArray ? Array.isArray(obj) : Object.prototype.toString.call(obj) === '[object Array]';";
     source += "var out = '';";
@@ -145,8 +145,12 @@ var VMhooks = {
 
 // Add a new method to Backbone.Model.prototype
 // support update model every time
-Backbone.Model.prototype.update = function(key, value) {
+// support vm.update("userlist[0].name") using namespace
+Backbone.Model.prototype.update = function(key, value, options) {
   var attr, changed;
+  if(typeof options === "undefined") options = {};
+  var silent = options.silent;
+
   if(typeof key === "object") {
     this.changed = key;
     for(attr in key) this.attributes[attr] = key[attr];
@@ -169,7 +173,6 @@ Backbone.Model.prototype.update = function(key, value) {
 
       key = newKey.slice(0, firstPos);
       var item = this.attributes[key];
-
       var lastKey = newKey.slice(firstPos);
 
       var source = 'obj'+ lastKey +'=value;return obj;';
@@ -182,11 +185,46 @@ Backbone.Model.prototype.update = function(key, value) {
         throw new Error("update "+ key + lastKey+" error, source="+ source);
       }
     }
-    this.trigger("change:"+ key, this);
+    if(!silent) this.trigger("change:"+ key, this);
   }
-  this.trigger("change", this);
+  if(!silent) this.trigger("change", this);
 };
 
+// Add a new method to Backbone.Model.prototype
+// support vm.read("userlist[0].name") using namespace
+Backbone.Model.prototype.read = function(key) {
+  // get key, don't contains . or []
+  if(key.indexOf(".") === -1 && key.indexOf("[") === -1) {
+    return this.get(key);
+  }
+
+  var source = 'return obj.'+ key +';';
+  try {
+    var execValue = new Function("obj", source);
+    return execValue(this.attributes);
+  } catch(e) {
+    // var e = ex;
+    throw new Error("get "+ e.message +" error, source="+ source);
+  }
+};
+
+// Add a new method to Backbone.Model.prototype
+// support vm.delete("userlist[0]") using namespace
+Backbone.Model.prototype.delete = function(key) {
+  // get key, don't contains . or []
+  if(key.indexOf(".") === -1 && key.indexOf("[") === -1) {
+    return this.get(key);
+  }
+
+  var source = 'return obj.'+ key +';';
+  try {
+    var execValue = new Function("obj", source);
+    return execValue(this.attributes);
+  } catch(e) {
+    // var e = ex;
+    throw new Error("get "+ e.message +" error, source="+ source);
+  }
+};
 
 // Create a plugin from backbone.js, Similar usage and backbone.view
 var VM = Backbone.VM = function(options) {
@@ -271,9 +309,14 @@ _.extend(VM.prototype, {
           it.attrs[ vmVal ] = [ VMhooks.remove( $(node) ) ];
         } else if(vmKey === "for") {
           // bind for:struct dom event
-          var bindInfo = node.innerHTML.match(forTplOnStripper);
-          if(!!bindInfo) {
-            $(node).on( bindInfo[1], "[vm-forkey]", VMhooks.bindForListener(it, bindInfo[2]) ).attr("vm-dombind", "");
+          var bindInfo;
+          var isAddforkey = false;
+          while( (bindInfo = forTplOnStripper.exec(node.innerHTML)) !== null) {
+            var $node = $(node).on( bindInfo[1], "[vm-forkey-"+ bindInfo[2] +"]", VMhooks.bindForListener(it, bindInfo[2]) );
+            if(!isAddforkey) {
+              isAddforkey = true;
+              $node.attr("vm-dombind", "");
+            }
           }
 
           if(! it.attrs[ vmVal ] ) it.attrs[ vmVal ] = [];
