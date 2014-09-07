@@ -368,6 +368,8 @@ _.extend(VM.prototype, {
     this.$el.find("[vm-dombind]").off();
     this.$el = null;
     this.vm  = null;
+    this.attrs = null;
+    this.input = null;
   }
 
 });
