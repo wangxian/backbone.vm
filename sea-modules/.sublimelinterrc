@@ -1,9 +1,0 @@
-{
-  "linters": {
-      "jshint": {
-          "@disable": true,
-          "args": [],
-          "excludes": []
-      }
-  }
-}

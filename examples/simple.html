@@ -32,9 +32,9 @@
   seajs.config({
     base: "../",
     alias: {
-      "backbone":"sea-modules/backbone/1.1.2/backbone.js",
-      "jquery":"sea-modules/jquery/1.10.2/jquery.js",
-      "underscore":"sea-modules/underscore/1.6.0/underscore.js"
+      "backbone":"backbone/1.1.2/backbone.js",
+      "jquery":"jquery/1.10.2/jquery.js",
+      "underscore":"underscore/1.6.0/underscore.js"
     }
   });
 </script>
@@ -151,6 +151,18 @@ seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
   // for test
   window.$        = $;
   window.Backbone = Backbone;
+
+  window.m = new Backbone.Model;
+  window.m.set({
+    name: "wangxian",
+    friends: new Backbone.Collection(["a", "b", "c"])
+  });
+
+  m.on("change", function(r){
+    console.log(r);
+  });
+
+
 
   // console.dir(new (Backbone.VM.extend({"id":12})) )
 

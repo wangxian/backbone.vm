@@ -19,19 +19,15 @@
   "spm": {
     "main": "src/backbone.vm.js",
     "dependencies": {
-      "seajs": "2.2.1",
       "jquery": "1.10.2",
-      "backbone": "",
-      "underscore": ""
+      "backbone": "1.1.2",
+      "underscore": "1.6.0"
     },
     "devDependencies": {
       "expect.js": "0.3.1",
       "jquery": "1.10.2",
       "backbone": "1.1.2",
       "underscore": "1.6.0"
-    },
-    "engines": {
-      "seajs": "2.2.1"
     },
     "tests": "tests/*.js"
   }
