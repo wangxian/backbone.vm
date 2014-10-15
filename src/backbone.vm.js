@@ -31,8 +31,8 @@ var VMhooks = {
   },
 
   // DOM->VM, INPUT(except checkbox/radio) on change
-  simpleOnChange: function(model, name) {
-    return function() { model.set(name, this.value); };
+  simpleOnChange: function(vm, name) {
+    return function() { vm.set(name, this.value); };
   },
 
   // Show/Hide HTML element if vm item is true or false
@@ -46,9 +46,9 @@ var VMhooks = {
   },
 
   // DOM->VM, checkbox on click
-  checkboxOnClick: function(model, name) {
+  checkboxOnClick: function(vm, name) {
     return function() {
-      var checkboxList = model.get(name);
+      var checkboxList = vm.get(name);
       var checked = this.checked;
       var value   = this.value;
       if(! _.isArray(checkboxList)) checkboxList = [];
@@ -60,7 +60,7 @@ var VMhooks = {
       } else {
         checkboxList.push(value);
       }
-      model.update(name, checkboxList);
+      vm.set(name, checkboxList);
     };
   },
 
@@ -145,21 +145,21 @@ var VMhooks = {
 
 // Add a new method to Backbone.Model.prototype
 // support vm.delete("userlist[0]") using namespace
-Backbone.Model.prototype.delete = function(key) {
-  // get key, don't contains . or []
-  if(key.indexOf(".") === -1 && key.indexOf("[") === -1) {
-    return this.get(key);
-  }
+// Backbone.Model.prototype.delete = function(key) {
+//   // get key, don't contains . or []
+//   if(key.indexOf(".") === -1 && key.indexOf("[") === -1) {
+//     return this.get(key);
+//   }
 
-  var source = 'return obj.'+ key +';';
-  try {
-    var execValue = new Function("obj", source);
-    return execValue(this.attributes);
-  } catch(e) {
-    // var e = ex;
-    throw new Error("get "+ e.message +" error, source="+ source);
-  }
-};
+//   var source = 'return obj.'+ key +';';
+//   try {
+//     var execValue = new Function("obj", source);
+//     return execValue(this.attributes);
+//   } catch(e) {
+//     // var e = ex;
+//     throw new Error("get "+ e.message +" error, source="+ source);
+//   }
+// };
 
 // Add a new method to Backbone.Model.prototype
 // support vm.read("userlist[0].name") using namespace
@@ -300,11 +300,11 @@ _.extend(VM.prototype, {
           // Bind DOM -> VM, for: input on change
           if( (node.nodeName === "INPUT" || node.nodeName === "SELECT") && vmKey === "val") {
             if(node.type === "radio") {
-              $(node).on("click", VMhooks.simpleOnChange( it._vm, vmVal ) ).attr("vm-dombind", "");
+              $(node).on("click", VMhooks.simpleOnChange( it, vmVal ) ).attr("vm-dombind", "");
             } else if(node.type === "checkbox"){
-              $(node).on("click", VMhooks.checkboxOnClick( it._vm, vmVal ) ).attr("vm-dombind", "");
+              $(node).on("click", VMhooks.checkboxOnClick( it, vmVal ) ).attr("vm-dombind", "");
             } else {
-              $(node).on("change", VMhooks.simpleOnChange( it._vm, vmVal ) ).attr("vm-dombind", "");
+              $(node).on("change", VMhooks.simpleOnChange( it, vmVal ) ).attr("vm-dombind", "");
             }
           }
         }
