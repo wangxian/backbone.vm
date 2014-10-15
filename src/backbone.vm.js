@@ -231,7 +231,7 @@ _.extend(VM.prototype, {
 
   // Update VM bind node when vm model is updated
   _updateVM: function(model) {
-    console.info("model updated:", model.changed, model.toJSON());
+    // console.info("model updated:", model.changed, model.toJSON());
     var it = this;
     var attrs = _.pick(this.attrs, _.keys(model.changed));
     _.each(attrs, function(v, k){
@@ -300,11 +300,11 @@ _.extend(VM.prototype, {
           // Bind DOM -> VM, for: input on change
           if( (node.nodeName === "INPUT" || node.nodeName === "SELECT") && vmKey === "val") {
             if(node.type === "radio") {
-              $(node).on("click", VMhooks.simpleOnChange( it.vm, vmVal ) ).attr("vm-dombind", "");
+              $(node).on("click", VMhooks.simpleOnChange( it._vm, vmVal ) ).attr("vm-dombind", "");
             } else if(node.type === "checkbox"){
-              $(node).on("click", VMhooks.checkboxOnClick( it.vm, vmVal ) ).attr("vm-dombind", "");
+              $(node).on("click", VMhooks.checkboxOnClick( it._vm, vmVal ) ).attr("vm-dombind", "");
             } else {
-              $(node).on("change", VMhooks.simpleOnChange( it.vm, vmVal ) ).attr("vm-dombind", "");
+              $(node).on("change", VMhooks.simpleOnChange( it._vm, vmVal ) ).attr("vm-dombind", "");
             }
           }
         }

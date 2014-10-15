@@ -157,8 +157,8 @@ seajs.use(['jquery','src/backbone.vm'], function($, VM){
 
     // default vm value
     defaults: {
-      age     : 99,
       nickname: "wang xian",
+      age     : 99,
       friends : ["sa", "sb", "sc"],
 
       clickCount: 0,
@@ -197,10 +197,10 @@ seajs.use(['jquery','src/backbone.vm'], function($, VM){
 
     // When click button#btn-click-me
     clickMe: function(e) {
-      console.log("this", this);
-      console.log("e:", e);
-      var _e = e.currentTarget;
-      console.log(_e.type);
+      // console.log("this", this);
+      // console.log("e:", e);
+      // var _e = e.currentTarget;
+      // console.log(_e.type);
 
       var clickCount = this.get("clickCount") + 1;
       this.set("clickCount", clickCount );
