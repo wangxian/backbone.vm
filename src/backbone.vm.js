@@ -5,8 +5,8 @@
 //  For all details and documentation:
 //  http://github.com/wangxian/backbone.vm
 
-var $ = require("jquery");
-var _ = require("underscore");
+var $        = require("jquery");
+var _        = require("underscore");
 var Backbone = require("backbone");
 
 // List of view options to be merged as properties.
@@ -144,71 +144,6 @@ var VMhooks = {
 };
 
 // Add a new method to Backbone.Model.prototype
-// support update model every time
-// support vm.update("userlist[0].name") using namespace
-Backbone.Model.prototype.update = function(key, value, options) {
-  var attr, changed;
-  if(typeof options === "undefined") options = {};
-  var silent = options.silent;
-
-  if(typeof key === "object") {
-    this.changed = key;
-    for(attr in key) this.attributes[attr] = key[attr];
-  } else {
-    var firstDotPos = key.indexOf(".");
-    var firstBrkPos = key.indexOf("[");
-
-    if(firstDotPos === -1 && firstBrkPos === -1) {
-      this.attributes[key] = value;
-      (changed = {})[key] = value;
-      this.changed = changed;
-    } else {
-      var newKey = key;
-      var firstPos;
-
-      if(firstDotPos === -1) firstPos = firstBrkPos;
-      else if(firstBrkPos === -1) firstPos = firstDotPos;
-      else if(firstDotPos < firstBrkPos) firstPos = firstDotPos;
-      else firstPos = firstBrkPos;
-
-      key = newKey.slice(0, firstPos);
-      var item = this.attributes[key];
-      var lastKey = newKey.slice(firstPos);
-
-      var source = 'obj'+ lastKey +'=value;return obj;';
-      // console.log(source);
-      try {
-        var execValue = new Function("obj,value", source);
-        execValue(item, value);
-      } catch(e) {
-        // var e = ex;
-        throw new Error("update "+ key + lastKey+" error, source="+ source);
-      }
-    }
-    if(!silent) this.trigger("change:"+ key, this);
-  }
-  if(!silent) this.trigger("change", this);
-};
-
-// Add a new method to Backbone.Model.prototype
-// support vm.read("userlist[0].name") using namespace
-Backbone.Model.prototype.read = function(key) {
-  // get key, don't contains . or []
-  if(key.indexOf(".") === -1 && key.indexOf("[") === -1) {
-    return this.get(key);
-  }
-
-  var source = 'return obj.'+ key +';';
-  try {
-    var execValue = new Function("obj", source);
-    return execValue(this.attributes);
-  } catch(e) {
-    // var e = ex;
-    throw new Error("get "+ e.message +" error, source="+ source);
-  }
-};
-
-// Add a new method to Backbone.Model.prototype
 // support vm.delete("userlist[0]") using namespace
 Backbone.Model.prototype.delete = function(key) {
   // get key, don't contains . or []
@@ -226,6 +161,24 @@ Backbone.Model.prototype.delete = function(key) {
   }
 };
 
+// Add a new method to Backbone.Model.prototype
+// support vm.read("userlist[0].name") using namespace
+// Backbone.Model.prototype.read = function(key) {
+//   // get key, don't contains . or []
+//   if(key.indexOf(".") === -1 && key.indexOf("[") === -1) {
+//     return this.get(key);
+//   }
+
+//   var source = 'return obj.'+ key +';';
+//   try {
+//     var execValue = new Function("obj", source);
+//     return execValue(this.attributes);
+//   } catch(e) {
+//     // var e = ex;
+//     throw new Error("get "+ e.message +" error, source="+ source);
+//   }
+// };
+
 // Create a plugin from backbone.js, Similar usage and backbone.view
 var VM = Backbone.VM = function(options) {
   this.cid = _.uniqueId('vm');
@@ -233,15 +186,15 @@ var VM = Backbone.VM = function(options) {
   _.extend(this, _.pick(options, vmOptions));
 
   this.$el = $(this.el);
-  this.vm  = new Backbone.Model();
+  this._vm  = new Backbone.Model();
 
   this._scanAttrs();
 
-  // this.vm.on("all", function(){
+  // this._vm.on("all", function(){
   //   console.log(arguments);
   // });
-  this.vm.on("change", this._updateVM, this);
-  this.vm.set(this.defaults);
+  this._vm.on("change", this._updateVM, this);
+  this._vm.set(this.defaults);
 
   this.initialize.apply(this, arguments);
 };
@@ -267,7 +220,7 @@ _.extend(VM.prototype, {
   initialize: function() {},
 
   // VM's model, Your app can use it to set VM value
-  // eg, this.vm.set("name", "tom")
+  // eg, this._vm.set("name", "tom")
   vm: null,
 
   // Store input[type=radio] & input[type=checkbox] bind data
@@ -278,12 +231,12 @@ _.extend(VM.prototype, {
 
   // Update VM bind node when vm model is updated
   _updateVM: function(model) {
-    // console.info("model updated:", model.changed, model.toJSON());
+    console.info("model updated:", model.changed, model.toJSON());
     var it = this;
     var attrs = _.pick(this.attrs, _.keys(model.changed));
     _.each(attrs, function(v, k){
       _.each(v, function(func){
-        func(it.vm.get(k));
+        func(it._vm.get(k));
       });
     });
   },
@@ -360,14 +313,57 @@ _.extend(VM.prototype, {
     });
   },
 
+  // get value from this._vm
+  get: function(key){
+    return this._vm.get(key);
+  },
+
+  // Add a new method to Backbone.Model.prototype
+  // support update model every time
+  // support vm.update("userlist[0].name") using namespace
+  set: function(key, value, options) {
+    var attr, changed;
+    if(typeof options === "undefined") options = {};
+    var silent = options.silent;
+
+    if(typeof key === "object") {
+      this._vm.changed = key;
+      for(attr in key) this._vm.attributes[attr] = key[attr];
+    } else {
+      var firstKeyPos = key.search(/\[|\./);
+
+      if(firstKeyPos === -1) {
+        this._vm.attributes[key] = value;
+        (changed = {})[key] = value;
+        this._vm.changed = changed;
+      } else {
+        var newKey = key;
+        var key      = newKey.slice(0, firstKeyPos);
+        var lastKey  = newKey.slice(firstKeyPos);
+        var itemObj  = this._vm.attributes[key];
+
+        var source = 'obj'+ lastKey +'=value;';
+        try {
+          var execValue = new Function("obj,value", source);
+          execValue(itemObj, value);
+        } catch(e) {
+          // var e = ex;
+          throw new Error("update "+ key + lastKey+" error, source="+ source);
+        }
+      }
+      if(!silent) this._vm.trigger("change:"+ key, this._vm);
+    }
+    if(!silent) this._vm.trigger("change", this._vm);
+  },
+
   // destory VM object when a new vm is not used
   // clear vm variable, unbind dom delegate
   // @todo ...
   destroy: function() {
-    this.vm.off(null, null, this);
+    this._vm.off(null, null, this);
     this.$el.find("[vm-dombind]").off();
     this.$el = null;
-    this.vm  = null;
+    this._vm  = null;
     this.attrs = null;
     this.input = null;
   }
@@ -381,4 +377,4 @@ VM.extend = Backbone.Model.extend;
 
 // Return a CMD module from seajs,
 // It must be loaded after backbone.js
-module.exports = Backbone;
+module.exports = VM;

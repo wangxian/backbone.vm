@@ -147,26 +147,13 @@
 </div>
 
 <script>
-seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
+seajs.use(['jquery','src/backbone.vm'], function($, VM){
   // for test
-  window.$        = $;
-  window.Backbone = Backbone;
-
-  window.m = new Backbone.Model;
-  window.m.set({
-    name: "wangxian",
-    friends: new Backbone.Collection(["a", "b", "c"])
-  });
-
-  m.on("change", function(r){
-    console.log(r);
-  });
-
-
+  window.$    = $;
+  window.VM   = VM;
 
   // console.dir(new (Backbone.VM.extend({"id":12})) )
-
-  var MainApp = Backbone.VM.extend({
+  var MainApp = VM.extend({
 
     // default vm value
     defaults: {
@@ -203,20 +190,20 @@ seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
     // At initialization we do something
     initialize: function() {
       // do something...
-      this.vm.on("all", function(){
-        console.log(arguments);
-      });
+      // this._vm.on("all", function(){
+      //   console.log(arguments);
+      // });
     },
 
     // When click button#btn-click-me
     clickMe: function(e) {
-      // console.log("this", this);
-      // console.log("e:", e);
-      // var _e = e.currentTarget;
-      // console.log(_e.type);
+      console.log("this", this);
+      console.log("e:", e);
+      var _e = e.currentTarget;
+      console.log(_e.type);
 
-      var clickCount = this.vm.get("clickCount") + 1;
-      this.vm.update("clickCount", clickCount );
+      var clickCount = this.get("clickCount") + 1;
+      this.set("clickCount", clickCount );
     },
 
     // bind button || delete user
@@ -226,31 +213,20 @@ seajs.use(['jquery','src/backbone.vm'], function($, Backbone){
       // console.log("key->", key);
 
       // re-render list
-      var userlist = this.vm.read("userlist");
+      var userlist = this.get("userlist");
       userlist.splice(key, 1);
-      this.vm.update("userlist", userlist);
-
-      // only delete itself
-      // var userlist = this.vm.read("userlist");
-      // userlist.splice(key, 1);
-      // this.vm.update("userlist", userlist, {silent: true});
-
-      // $(e.currentTarget).parent().parent().remove();
+      this.set("userlist", userlist);
     },
 
     updateAge: function(e, key) {
-      var age = this.vm.read("userlist["+ key +"].age");
-      // Both equivalent
-      // var age = this.vm.get("userlist")[key].age;
-
-      age++;
-      this.vm.update("userlist["+ key +"].age", age);
+      var age = this.get("userlist")[key].age + 1;
+      this.set("userlist["+ key +"].age", age);
     },
 
     // show/hide/remove long tips
-    showTips: function(e) { this.vm.update("isShowText", true); },
-    hideTips: function(e) { this.vm.update("isShowText", false); },
-    removeTips: function(e) { this.vm.update("isRemoved", true); }
+    showTips: function(e) { this.set("isShowText", true); },
+    hideTips: function(e) { this.set("isShowText", false); },
+    removeTips: function(e) { this.set("isRemoved", true); }
 
   });
 
