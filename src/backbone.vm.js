@@ -26,8 +26,11 @@ var forTplOnStripper = /on:(\w+)=(\w+)/g;
 // eg: html, text, on...
 var VMhooks = {
   // VM->DOM, text, html, val...
-  simple: function(node, funcName) {
-    return function(str) { node[funcName](str); };
+  simple: function(node, funcName, filters) {
+    return function(str) {
+      _.each(filters, function(filter){ str = filter(str); });
+      node[funcName](str);
+    };
   },
 
   // DOM->VM, INPUT(except checkbox/radio) on change
@@ -184,6 +187,7 @@ var VM = Backbone.VM = function(options) {
   this.cid = _.uniqueId('vm');
   if(!options) { options = {}; }
   _.extend(this, _.pick(options, vmOptions));
+  _.extend(this._filter, this.filter);
 
   this.$el = $(this.el);
   this._vm  = new Backbone.Model();
@@ -210,10 +214,17 @@ _.extend(VM.prototype, {
 
   // Store the relationship between Dom and model
   // eg, { "nickname":[ function(){}, .... ]}
-  attrs: {},
+  _attrs: {},
 
   // Default VM value
   defaults: {},
+
+  // Store filter function
+  _filter: {
+    uppercase: function(str) { return str.toUpperCase(); },
+    lowercase: function(str) { return str.toLowerCase(); },
+    json: function(obj, pretty) { return JSON.stringify(obj, null, pretty ? '  ' : null); }
+  },
 
   // Initialize is an empty function by default. Override it with your own
   // initialization logic.
@@ -233,7 +244,8 @@ _.extend(VM.prototype, {
   _updateVM: function(model) {
     // console.info("model updated:", model.changed, model.toJSON());
     var it = this;
-    var attrs = _.pick(this.attrs, _.keys(model.changed));
+    var attrs = _.pick(this._attrs, _.keys(model.changed));
+    // console.log(attrs);
     _.each(attrs, function(v, k){
       _.each(v, function(func){
         func(it._vm.get(k));
@@ -250,16 +262,18 @@ _.extend(VM.prototype, {
       _.each(vmNodeEl, function(v){
         var arr = v.split(":");
         var vmKey = arr[0];
-        var vmVal = arr[1];
+        var vmFilters = arr[1].split("|");
+        var vmVal     = vmFilters.shift();
+        // console.log(vmKey, arr[1]);
 
         if(vmKey === "on") {
           var ev = vmVal.split("=");
           // console.log(ev);
           $(node).on( ev[0], VMhooks.bindEventListener(it, ev[1]) ).attr("vm-dombind", "");
         } else if(vmKey === "show") {
-          it.attrs[ vmVal ] = [ VMhooks.show( $(node) ) ];
+          it._attrs[ vmVal ] = [ VMhooks.show( $(node) ) ];
         } else if(vmKey === "remove") {
-          it.attrs[ vmVal ] = [ VMhooks.remove( $(node) ) ];
+          it._attrs[ vmVal ] = [ VMhooks.remove( $(node) ) ];
         } else if(vmKey === "for") {
           // bind for:struct dom event
           var bindInfo;
@@ -272,12 +286,12 @@ _.extend(VM.prototype, {
             }
           }
 
-          if(! it.attrs[ vmVal ] ) it.attrs[ vmVal ] = [];
-          it.attrs[ vmVal ].push( VMhooks.forTemplate( node ) );
+          if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
+          it._attrs[ vmVal ].push( VMhooks.forTemplate( node ) );
         } else {
 
           // Bind VM -> DOM, for: text, val <-> vm model
-          if(! it.attrs[ vmVal ] ) it.attrs[ vmVal ] = [];
+          if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
           if(node.type === "radio" || node.type === "checkbox") {
             if(! it.input[node.type][vmVal] ) {
               // When it.input.[node.type][vmVal] is empty
@@ -287,17 +301,36 @@ _.extend(VM.prototype, {
               it.input[node.type][ vmVal ] = ri;
               // console.log(it.input[node.type]);
 
-              it.attrs[ vmVal ].push( VMhooks[node.type]( it.input[node.type][ vmVal ]) );
+              it._attrs[ vmVal ].push( VMhooks[node.type]( it.input[node.type][ vmVal ]) );
             } else {
               // input[node.type] like { "age":{"1": Node }}
               it.input[node.type][ vmVal ][node.value] = node;
             }
           } else {
-            // simple div,
-            it.attrs[ vmVal ].push( VMhooks.simple( $(node), vmKey ) );
+            // simple div
+
+            // 支持 filter 功能，之前把 filter 准备好，做好调用 filter 的准备
+            var filters = _.map(vmFilters, function(filter){
+              var filterArgs = filter.split("#");
+              var filterName = filterArgs.shift();
+              return function(obj){
+                var args = filterArgs.concat();
+                args.unshift(obj);
+                if(it._filter[filterName]) {
+                  return it._filter[filterName].apply(null, args);
+                } else if( _[filterName] ) {
+                  // 支持，直接调用 underscore.js 作为 filter
+                  return _[filterName].apply(null, args);
+                }
+              }
+            });
+            // console.log(filters);
+
+            // 新增：第三个参数，filters, 例如: [function(obj){ }, ...]
+            it._attrs[ vmVal ].push( VMhooks.simple( $(node), vmKey, filters ) );
           }
 
-          // Bind DOM -> VM, for: input on change
+          // form Bind DOM -> VM, for: input on change
           if( (node.nodeName === "INPUT" || node.nodeName === "SELECT") && vmKey === "val") {
             if(node.type === "radio") {
               $(node).on("click", VMhooks.simpleOnChange( it, vmVal ) ).attr("vm-dombind", "");
@@ -364,7 +397,7 @@ _.extend(VM.prototype, {
     this.$el.find("[vm-dombind]").off();
     this.$el = null;
     this._vm  = null;
-    this.attrs = null;
+    this._attrs = null;
     this.input = null;
   }
 

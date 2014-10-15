@@ -48,102 +48,99 @@
 <div id="main">
   <h1>简单测试 - SIMPLE TEST</h1>
 
-  <form action="" name="form1">
+  <h2>请输入姓名：</h2>
+  <p>
+    <input id="nickname" type="text" name="nickname" vm="val:nickname|escape" />
+  </p>
+  <p>您的姓名为：<em vm="html:nickname|filter1#true#1|uppercase|escape">--</em></p>
 
-    <h2>请输入姓名：</h2>
-    <p>
-      <input id="nickname" type="text" name="nickname" vm="val:nickname" />
-    </p>
-    <p>您的姓名为：<em vm="html:nickname"></em></p>
+  <h2>选择年龄：</h2>
+  <select name="age" id="age" vm="val:age">
+    <option value="28">28</option>
+    <option value="29">29</option>
+    <option value="30">30</option>
+    <option value="31">31</option>
+    <option value="32">32</option>
+    <option value="99">99</option>
+  </select>
+  <p>您的年龄为：<em vm="text:age"></em></p>
+  <p>
+    <label><input type="radio" name="age-radio" vm="val:age" value="28" /> 28</label>&nbsp;&nbsp;
+    <label><input type="radio" name="age-radio" vm="val:age" value="29" /> 29</label>&nbsp;&nbsp;
+    <label><input type="radio" name="age-radio" vm="val:age" value="30" /> 30</label>&nbsp;&nbsp;
+    <label><input type="radio" name="age-radio" vm="val:age" value="31" /> 31</label>&nbsp;&nbsp;
+    <label><input type="radio" name="age-radio" vm="val:age" value="32" /> 32</label>&nbsp;&nbsp;
+    <label><input type="radio" name="age-radio" vm="val:age" value="99" /> 99</label>&nbsp;&nbsp;
+  </p>
 
-    <h2>选择年龄：</h2>
-    <select name="age" id="age" vm="val:age">
-      <option value="28">28</option>
-      <option value="29">29</option>
-      <option value="30">30</option>
-      <option value="31">31</option>
-      <option value="32">32</option>
-      <option value="99">99</option>
-    </select>
-    <p>您的年龄为：<em vm="text:age"></em></p>
-    <p>
-      <label><input type="radio" name="age-radio" vm="val:age" value="28" /> 28</label>&nbsp;&nbsp;
-      <label><input type="radio" name="age-radio" vm="val:age" value="29" /> 29</label>&nbsp;&nbsp;
-      <label><input type="radio" name="age-radio" vm="val:age" value="30" /> 30</label>&nbsp;&nbsp;
-      <label><input type="radio" name="age-radio" vm="val:age" value="31" /> 31</label>&nbsp;&nbsp;
-      <label><input type="radio" name="age-radio" vm="val:age" value="32" /> 32</label>&nbsp;&nbsp;
-      <label><input type="radio" name="age-radio" vm="val:age" value="99" /> 99</label>&nbsp;&nbsp;
-    </p>
+  <h2>请选择你的朋友:</h2>
+  <p>
+    <label><input type="checkbox" name="friends" vm="val:friends" value="sa" /> sa</label>&nbsp;&nbsp;
+    <label><input type="checkbox" name="friends" vm="val:friends" value="sb" /> sb</label>&nbsp;&nbsp;
+    <label><input type="checkbox" name="friends" vm="val:friends" value="sc" /> sc</label>&nbsp;&nbsp;
+    <label><input type="checkbox" name="friends" vm="val:friends" value="sd" /> sd</label>&nbsp;&nbsp;
+    <label><input type="checkbox" name="friends" vm="val:friends" value="se" /> se</label>&nbsp;&nbsp;
+  </p>
+  <p>您的朋友：<em vm="text:friends"></em></p>
 
-    <h2>请选择你的朋友:</h2>
-    <p>
-      <label><input type="checkbox" name="friends" vm="val:friends" value="sa" /> sa</label>&nbsp;&nbsp;
-      <label><input type="checkbox" name="friends" vm="val:friends" value="sb" /> sb</label>&nbsp;&nbsp;
-      <label><input type="checkbox" name="friends" vm="val:friends" value="sc" /> sc</label>&nbsp;&nbsp;
-      <label><input type="checkbox" name="friends" vm="val:friends" value="sd" /> sd</label>&nbsp;&nbsp;
-      <label><input type="checkbox" name="friends" vm="val:friends" value="se" /> se</label>&nbsp;&nbsp;
-    </p>
-    <p>您的朋友：<em vm="text:friends"></em></p>
+  <h2>事件测试 DOM Event bind</h2>
+  <p>
+    <button id="btn-click-me" type="button" vm="on:click=clickMe">点我+++++</button>
+  </p>
+  <p>点击次数：<i vm="text:clickCount">-</i></p>
 
-    <h2>事件测试 DOM Event bind</h2>
-    <p>
-      <button id="btn-click-me" type="button" vm="on:click=clickMe">点我+++++</button>
-    </p>
-    <p>点击次数：<i vm="text:clickCount">-</i></p>
+  <h2>显示/隐藏 show/hide/remove</h2>
+  <div class="long-tips" vm="show:isShowText,remove:isRemoved">
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+  </div>
 
-    <h2>显示/隐藏 show/hide/remove</h2>
-    <div class="long-tips" vm="show:isShowText,remove:isRemoved">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
-    </div>
+  <p>
+    <button type="button" vm="on:click=showTips">show long text</button>&nbsp;&nbsp;
+    <button type="button" vm="on:click=hideTips">hide long text</button>&nbsp;&nbsp;
+    <button type="button" vm="on:click=removeTips" class="dangerous">remove long text</button>
+  </p>
 
-    <p>
-      <button type="button" vm="on:click=showTips">show long text</button>&nbsp;&nbsp;
-      <button type="button" vm="on:click=hideTips">hide long text</button>&nbsp;&nbsp;
-      <button type="button" vm="on:click=removeTips" class="dangerous">remove long text</button>
-    </p>
+  <h3>数据遍历</h3>
+  <pre><code>
+  // 数组测试
+  // 假如数据结构如下：
+  var userlist = [
+    {"name": "antoy", "age": 18},
+    {"name": "tom",   "age": 23},
+    {"name": "jam",   "age": 42},
+    {"name": "wangzi","age": 28}
+  ]
+  </code></pre>
+  <ul vm="for:userlist">
+    <!--
+    <li>
+      <p>索引：{$key}</p>
+      <p>姓名：{$value.name}</p>
+      <p>年龄：{$value.age}</p>
+      <p><button type="button" vm="on:click=deleteUser">delete</button></p>
+      <p><button type="button" vm="on:click=updateAge">update user age</button></p>
+    </li>
+    -->
+  </ul>
 
-    <h3>数据遍历</h3>
-    <pre><code>
-    // 数组测试
-    // 假如数据结构如下：
-    var userlist = [
-      {"name": "antoy", "age": 18},
-      {"name": "tom",   "age": 23},
-      {"name": "jam",   "age": 42},
-      {"name": "wangzi","age": 28}
-    ]
-    </code></pre>
-    <ul vm="for:userlist">
-      <!--
-      <li>
-        <p>索引：{$key}</p>
-        <p>姓名：{$value.name}</p>
-        <p>年龄：{$value.age}</p>
-        <p><button type="button" vm="on:click=deleteUser">delete</button></p>
-        <p><button type="button" vm="on:click=updateAge">update user age</button></p>
-      </li>
-      -->
-    </ul>
+  <pre><code>
+  // JSON Object对象测试
+  // 假如数据结构如下：
+  profile = {
+    name: "西门吹雪",
+    age : 22,
+    nickname: "西门"
+  }
+  </code></pre>
+  <ul vm="for:profile">
+    <!--
+    <li>{$key}={$value}</li>
+    -->
+  </ul>
 
-    <pre><code>
-    // JSON Object对象测试
-    // 假如数据结构如下：
-    profile = {
-      name: "西门吹雪",
-      age : 22,
-      nickname: "西门"
-    }
-    </code></pre>
-    <ul vm="for:profile">
-      <!--
-      <li>{$key}={$value}</li>
-      -->
-    </ul>
-
-  </form>
 </div>
 
 <script>
@@ -186,6 +183,14 @@ seajs.use(['jquery','src/backbone.vm'], function($, VM){
     // Bind Dom id, Control of the scope of the VM
     // So, you can define some VM object
     el: "#main",
+
+    filter: {
+      filter1: function(){
+        console.log("filter的参数列表为：",arguments);
+        // return arguments[0];
+        return encodeURIComponent(arguments[0]);
+      }
+    },
 
     // At initialization we do something
     initialize: function() {
