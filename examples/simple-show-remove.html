@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style>
+  button {
+    border: 0; background-color: #1ABC9C;
+    padding: 8px 20px; color: white;
+    -webkit-transition: 0.25s;
+    -moz-transition: 0.25s;
+    -o-transition: 0.25s;
+    transition: 0.25s;
+    border-radius: 5px;
+    outline: none;
+  }
+  button:hover { background-color: #48c9b0; }
+  button.dangerous { background-color: #E74C3C; }
+  button.dangerous:hover { background-color: #EC7063; }
+
+  .long-tips { display: none; border: 1px dashed #CCC; padding: 10px; }
+</style>
+<script src="sea-debug.js?nowrap"></script>
+<script>
+  seajs.config({
+    base: "../",
+    alias: {
+      "backbone":"backbone/1.1.2/backbone.js",
+      "jquery":"jquery/1.10.2/jquery.js",
+      "underscore":"underscore/1.6.0/underscore.js"
+    }
+  });
+</script>
+<!--[if lt IE 9]>
+<script src="../static/js/html5shiv.js"></script>
+<![endif]-->
+</head>
+<body>
+
+
+<div id="main">
+  <h1>struct show/remove</h1>
+
+  <div class="long-tips" vm="show:isShowText,remove:isRemoved">
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quae voluptatibus in, asperiores ullam vitae dolore, animi possimus, obcaecati excepturi error modi tempore. Sunt voluptatibus eius ex veniam distinctio molestiae.
+  </div>
+
+  <p>
+    <button type="button" vm="on:click=showTips">show long text</button>&nbsp;&nbsp;
+    <button type="button" vm="on:click=hideTips">hide long text</button>&nbsp;&nbsp;
+    <button type="button" vm="on:click=removeTips" class="dangerous">remove long text</button>
+  </p>
+
+</div>
+
+<script>
+seajs.use(['jquery','src/backbone.vm'], function($, VM){
+  // for test
+  window.$    = $;
+  window.VM   = VM;
+
+  var MainApp = VM.extend({
+
+    // default vm value
+    defaults: {
+      isShowText: false,
+
+      // set text tips is removed
+      isRemoved: false
+    },
+
+    // Bind Dom id, Control of the scope of the VM
+    // So, you can define some VM object
+    el: "#main",
+
+    // show/hide/remove long tips
+    showTips: function(e) { this.set("isShowText", true); },
+    hideTips: function(e) { this.set("isShowText", false); },
+    removeTips: function(e) { this.set("isRemoved", true); }
+
+  });
+
+  $(document).ready(function(){
+    // init new MainApp, for test
+    window.mainapp = new MainApp();
+  });
+});
+</script>
+
+</body>
+</html>

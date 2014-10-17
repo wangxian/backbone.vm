@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>simple demo - 2014-08-16</title>
+<style>
+  h1 { border-bottom: 2px solid #efefef; padding: 15px 0 8px 0; }
+  h2 { font-size: 18px; margin: 40px 0 10px 0; }
+  input,button,select,textarea{ outline:none }
+
+  button {
+    border: 0; background-color: #1ABC9C;
+    padding: 8px 20px; color: white;
+    -webkit-transition: 0.25s;
+    -moz-transition: 0.25s;
+    -o-transition: 0.25s;
+    transition: 0.25s;
+    border-radius: 5px;
+  }
+  button:hover { background-color: #48c9b0; }
+  button.dangerous { background-color: #E74C3C; }
+  button.dangerous:hover { background-color: #EC7063; }
+
+</style>
+<script src="sea-debug.js?nowrap"></script>
+<script>
+  seajs.config({
+    base: "../",
+    alias: {
+      "backbone":"backbone/1.1.2/backbone.js",
+      "jquery":"jquery/1.10.2/jquery.js",
+      "underscore":"underscore/1.6.0/underscore.js"
+    }
+  });
+</script>
+<!--[if lt IE 9]>
+<script src="../static/js/html5shiv.js"></script>
+<![endif]-->
+</head>
+<body>
+
+
+<div id="main">
+  <h1>from demo</h1>
+
+  <h2>选择年龄：</h2>
+  <select name="age" id="age" vm="val:age">
+    <option value="28">28</option>
+    <option value="29">29</option>
+    <option value="30">30</option>
+    <option value="31">31</option>
+    <option value="32">32</option>
+    <option value="99">99</option>
+  </select>
+  <p>您的年龄为：<em vm="text:age"></em></p>
+  <p>
+    <label><input type="radio" name="age-radio" vm="val:age" value="28" /> 28</label>&nbsp;&nbsp;
+    <label><input type="radio" name="age-radio" vm="val:age" value="29" /> 29</label>&nbsp;&nbsp;
+    <label><input type="radio" name="age-radio" vm="val:age" value="30" /> 30</label>&nbsp;&nbsp;
+    <label><input type="radio" name="age-radio" vm="val:age" value="31" /> 31</label>&nbsp;&nbsp;
+    <label><input type="radio" name="age-radio" vm="val:age" value="32" /> 32</label>&nbsp;&nbsp;
+    <label><input type="radio" name="age-radio" vm="val:age" value="99" /> 99</label>&nbsp;&nbsp;
+  </p>
+
+  <h2>请选择你的朋友:</h2>
+  <p>
+    <label><input type="checkbox" name="friends" vm="val:friends" value="sa" /> sa</label>&nbsp;&nbsp;
+    <label><input type="checkbox" name="friends" vm="val:friends" value="sb" /> sb</label>&nbsp;&nbsp;
+    <label><input type="checkbox" name="friends" vm="val:friends" value="sc" /> sc</label>&nbsp;&nbsp;
+    <label><input type="checkbox" name="friends" vm="val:friends" value="sd" /> sd</label>&nbsp;&nbsp;
+    <label><input type="checkbox" name="friends" vm="val:friends" value="se" /> se</label>&nbsp;&nbsp;
+  </p>
+  <p>您的朋友有：[<em vm="text:friends"></em>]</p>
+
+
+</div>
+
+<script>
+seajs.use(['jquery','src/backbone.vm'], function($, VM){
+  // for test
+  window.$    = $;
+  window.VM   = VM;
+
+  var MainApp = VM.extend({
+
+    // default vm value
+    defaults: {
+      age     : 99,
+      friends : ["sa", "sb", "sc"]
+    },
+
+    // Bind Dom id, Control of the scope of the VM
+    // So, you can define some VM object
+    el: "#main",
+
+    // At initialization we do something
+    initialize: function() {
+      // do something...
+      // this._vm.on("all", function(){
+      //   console.log(arguments);
+      // });
+    }
+
+  });
+
+  $(document).ready(function(){
+    // init new MainApp, for test
+    window.mainapp = new MainApp();
+  });
+});
+</script>
+
+</body>
+</html>
