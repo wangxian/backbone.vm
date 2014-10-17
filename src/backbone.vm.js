@@ -367,10 +367,8 @@ _.extend(VM.prototype, {
 
       if(firstKeyPos === -1) {
         this._vm.attributes[key] = value;
-        (changed = {})[key] = value;
-        this._vm.changed = changed;
       } else {
-        var newKey = key;
+        var newKey   = key;
         var key      = newKey.slice(0, firstKeyPos);
         var lastKey  = newKey.slice(firstKeyPos);
         var itemObj  = this._vm.attributes[key];
@@ -384,6 +382,8 @@ _.extend(VM.prototype, {
           throw new Error("update "+ key + lastKey+" error, source="+ source);
         }
       }
+      (changed = {})[key] = value;
+      this._vm.changed = changed;
       if(!silent) this._vm.trigger("change:"+ key, this._vm);
     }
     if(!silent) this._vm.trigger("change", this._vm);

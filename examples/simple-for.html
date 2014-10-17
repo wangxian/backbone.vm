@@ -132,6 +132,12 @@ seajs.use(['jquery','src/backbone.vm'], function($, VM){
     updateAge: function(e, key) {
       var age = this.get("userlist")[key].age + 1;
       this.set("userlist["+ key +"].age", age);
+    },
+
+    initialize: function() {
+      // this._vm.on("all", function(){
+      //   console.log(arguments);
+      // });
     }
 
   });
