@@ -16,7 +16,7 @@ var vmOptions = ["el", "defaults"];
 var vmAttrStripper = /\s+/g;
 
 // for:stuct replace && clear template string
-var forTplReplaceStripper = /<!--|-->|\n|'|{|}/g;
+// var forTplReplaceStripper = /<!--|-->|\n|'|{|}/g;
 
 // for:struct match dom bind setting string
 // var forTplOnStripper = /on:(\w+)=(\w+)/g;
