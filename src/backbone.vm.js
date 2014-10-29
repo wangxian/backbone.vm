@@ -420,10 +420,10 @@ _.extend(VM.prototype, {
   destroy: function() {
     this._vm.off(null, null, this);
     this.$el.find("[vm-dombind]").off();
-    this.$el = null;
-    this._vm  = null;
+    this.$el    = null;
+    this._vm    = null;
     this._attrs = null;
-    this.input = null;
+    this.input  = null;
   }
 
 });

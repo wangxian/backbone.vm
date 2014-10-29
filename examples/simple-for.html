@@ -16,11 +16,13 @@
     -moz-transition: 0.25s;
     -o-transition: 0.25s;
     transition: 0.25s;
-    border-radius: 5px;
+    border-radius: 8px;
+    font-size: 16px;
   }
   button:hover { background-color: #48c9b0; }
   button.dangerous { background-color: #E74C3C; }
   button.dangerous:hover { background-color: #EC7063; }
+  button em { color: #999; font-size: 14px; }
 
   pre { background-color: #EFEFEF; padding: 10px 0; }
   li > p { margin: 5px 0; }
@@ -63,9 +65,15 @@
     <li>
       <p>索引：{$key}</p>
       <p>姓名：{$value.name}</p>
-      <p>年龄：{$value.age}</p>
-      <p><button type="button" vm="on:click=deleteUser,on:touchstart=deleteUser">delete</button></p>
+      <p>年龄：<i class="age">{$value.age}</i></p>
       <p><button type="button" vm="on:click=updateAge">update user age</button></p>
+      <p>
+        <button type="button" vm="on:click=updateAgeSilent">
+          update user age \-\-\- silent update <em>(Not update all for-view)</em>
+        </button>
+      </p>
+      <p><button type="button" vm="on:click=deleteUser">delete user</button></p>
+      <p><button type="button" vm="on:click=deleteUserSilent">delete user \-\-\- silent</button></p>
     </li>
     -->
   </ul>
@@ -117,28 +125,43 @@ seajs.use(['jquery','src/backbone.vm'], function($, VM){
     // So, you can define some VM object
     el: "#main",
 
-    // bind button || delete user
-    deleteUser: function(e, key, $el) {
-      console.log("this->", this);
-      console.log("$el:", $el.get(0));
-      console.log("key->", key);
-
-      // re-render list
-      // var userlist = this.get("userlist");
-      // userlist.splice(key, 1);
-      // this.set("userlist", userlist);
-    },
-
     updateAge: function(e, key) {
       var age = this.get("userlist")[key].age + 1;
       this.set("userlist["+ key +"].age", age);
     },
 
-    initialize: function() {
-      // this._vm.on("all", function(){
-      //   console.log(arguments);
-      // });
-    }
+    updateAgeSilent: function(e, key, $el) {
+      var age = this.get("userlist")[key].age + 1;
+      this.set("userlist["+ key +"].age", age, {silent: true});
+
+      $el.find(".age").text(age);
+    },
+
+    // bind button || delete user
+    deleteUser: function(e, key, $el) {
+      // console.log("this->", this);
+      // console.log("$el:", $el.get(0));
+      // console.log("key->", key);
+
+      // re-render list
+      var userlist = this.get("userlist");
+      userlist.splice(key, 1);
+      this.set("userlist", userlist);
+    },
+
+    deleteUserSilent: function(e, key, $el) {
+       var userlist = this.get("userlist");
+        userlist.splice(key, 1);
+        this.set("userlist", userlist, {silent: true});
+
+        $el.remove();
+    },
+
+    // initialize: function() {
+    //   // this._vm.on("all", function(){
+    //   //   console.log(arguments);
+    //   // });
+    // }
 
   });
 
