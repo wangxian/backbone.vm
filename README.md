@@ -86,6 +86,9 @@ $(document).ready(function(){
 
 如果绑定的值 !!variable 是`true` 显示 `false` 隐藏
 
+### remove
+移除 DOM 元素
+
 ### on
 绑定HTML dom Event，用法，on:click=xxxFunc
 

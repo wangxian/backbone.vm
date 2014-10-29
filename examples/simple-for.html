@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style>
+  .demo { padding: 10px; background-color: #efefef; }
+  h1 { border-bottom: 2px solid #efefef; padding: 15px 0 8px 0; }
+  h2 { font-size: 18px; margin: 40px 0 10px 0; }
+  input,button,select,textarea{ outline:none }
+
+  button {
+    border: 0; background-color: #1ABC9C;
+    padding: 8px 20px; color: white;
+    -webkit-transition: 0.25s;
+    -moz-transition: 0.25s;
+    -o-transition: 0.25s;
+    transition: 0.25s;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  button:hover { background-color: #48c9b0; }
+  button.dangerous { background-color: #E74C3C; }
+  button.dangerous:hover { background-color: #EC7063; }
+  button em { color: #999; font-size: 14px; }
+
+  pre { background-color: #EFEFEF; padding: 10px 0; }
+  li > p { margin: 5px 0; }
+
+</style>
+<script src="sea-debug.js?nowrap"></script>
+<script>
+  seajs.config({
+    base: "../",
+    alias: {
+      "backbone":"backbone/1.1.2/backbone.js",
+      "jquery":"jquery/1.10.2/jquery.js",
+      "underscore":"underscore/1.6.0/underscore.js"
+    }
+  });
+</script>
+<!--[if lt IE 9]>
+<script src="../static/js/html5shiv.js"></script>
+<![endif]-->
+</head>
+<body>
+
+
+<div id="main">
+  <h1>struct for &amp; template</h1>
+
+  <h3>数据遍历</h3>
+  <pre><code>
+  // 数组测试
+  // 假如数据结构如下：
+  var userlist = [
+    {"name": "antoy", "age": 18},
+    {"name": "tom",   "age": 23},
+    {"name": "jam",   "age": 42},
+    {"name": "wangzi","age": 28}
+  ]
+  </code></pre>
+  <ul vm="for:userlist">
+    <!--
+    <li>
+      <p>$key：<%= $key %></p>
+      <p>$value: <%= json($value) %>
+      <p>姓名：<%= $value.name %></p>
+      <p>年龄：<i class="age"><%= $value.age %></i></p>
+      <p><button type="button" vm="on:click=updateAge">update user age</button></p>
+      <p>
+        <button type="button" vm="on:click=updateAgeSilent">
+          update user age --- silent update <em>(Not update all for-view)</em>
+        </button>
+      </p>
+      <p><button type="button" vm="on:click=deleteUser">delete user</button></p>
+      <p><button type="button" vm="on:click=deleteUserSilent">delete user --- silent</button></p>
+    </li>
+    -->
+  </ul>
+
+  <pre><code>
+  // JSON Object对象测试
+  // 假如数据结构如下：
+  profile = {
+    name: "西门吹雪",
+    age : 22,
+    nickname: "西门"
+  }
+  </code></pre>
+  <ul vm="for:profile">
+    <!--
+    <li><%= $key %>=<%= $value %></li>
+    -->
+  </ul>
+
+</div>
+
+<script>
+seajs.use(['jquery','src/backbone.vm'], function($, VM){
+  // for test
+  window.$    = $;
+  window.VM   = VM;
+
+  var MainApp = VM.extend({
+
+    // default vm value
+    defaults: {
+      // User info
+      profile: {
+        name: "西门吹雪",
+        age : 22,
+        nickname: "西门"
+      },
+
+      // user list
+      userlist: [
+        {"name": "antoy", "age": 18},
+        {"name": "tom",   "age": 23},
+        {"name": "jam",   "age": 42},
+        {"name": "wangzi","age": 28}
+      ]
+    },
+
+    // Bind Dom id, Control of the scope of the VM
+    // So, you can define some VM object
+    el: "#main",
+
+    updateAge: function(e, key) {
+      var age = this.get("userlist")[key].age + 1;
+      this.set("userlist["+ key +"].age", age);
+    },
+
+    updateAgeSilent: function(e, key, $el) {
+      var age = this.get("userlist")[key].age + 1;
+      this.set("userlist["+ key +"].age", age, {silent: true});
+
+      $el.find(".age").text(age);
+    },
+
+    // bind button || delete user
+    deleteUser: function(e, key, $el) {
+      // console.log("this->", this);
+      // console.log("$el:", $el.get(0));
+      // console.log("key->", key);
+
+      // re-render list
+      var userlist = this.get("userlist");
+      userlist.splice(key, 1);
+      this.set("userlist", userlist);
+    },
+
+    deleteUserSilent: function(e, key, $el) {
+      var userlist = this.get("userlist");
+      userlist.splice(key, 1);
+      this.set("userlist", userlist, {silent: true});
+
+      $el.remove();
+    },
+
+    // initialize: function() {
+    //   // this._vm.on("all", function(){
+    //   //   console.log(arguments);
+    //   // });
+    // }
+
+  });
+
+  $(document).ready(function(){
+    // init new MainApp, for test
+    window.mainapp = new MainApp();
+  });
+});
+</script>
+
+</body>
+</html>

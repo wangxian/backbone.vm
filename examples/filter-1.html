@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>simple demo - 2014-09-17</title>
+<title></title>
 <style>input{ width: 60%; padding: 5px 8px; }</style>
 <script src="sea-debug.js?nowrap"></script>
 <script>
@@ -23,17 +23,22 @@
 
 
 <div id="main">
-  <h1>SIMPLE DEMO</h1>
+  <h1>filter simple demo</h1>
 
   <h2>请输入姓名：</h2>
   <p>
-    <input id="nickname" type="text" name="nickname" vm="val:nickname" />
+    <input id="nickname" type="text" name="nickname" vm="val:nickname|escape" />
   </p>
-  <p>您的姓名为：<em vm="html:nickname"></em></p>
+  <p>您的姓名为：<em vm="text:nickname|filter1#true#1|uppercase|escape">--</em></p>
 </div>
 
 <script>
 seajs.use(['jquery','src/backbone.vm'], function($, VM){
+  // for test
+  window.$    = $;
+  window.VM   = VM;
+
+  // console.dir(new (Backbone.VM.extend({"id":12})) )
   var MainApp = VM.extend({
 
     // default vm value
@@ -43,12 +48,21 @@ seajs.use(['jquery','src/backbone.vm'], function($, VM){
 
     // Bind Dom id, Control of the scope of the VM
     // So, you can define some VM object
-    el: "#main"
+    el: "#main",
+
+    filter: {
+      filter1: function(){
+        console.log("filter的参数列表为：", arguments);
+        // return arguments[0];
+        return encodeURIComponent(arguments[0]);
+      }
+    }
 
   });
 
   $(document).ready(function(){
-    new MainApp();
+    // init new MainApp, for test
+    window.mainapp = new MainApp();
   });
 });
 </script>
