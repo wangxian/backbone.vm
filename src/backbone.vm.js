@@ -126,19 +126,19 @@ var VMhooks = {
   },
 
   forTemplate: function(vmObj, $node) {
-    var tpl = $node.html();
-    tpl = tpl.replace(forTplReplaceStripper, function(match){
-      // console.log(match);
-      if(match === "<!--" || match === "-->" || match === "\n") return "";
-      else if(match === "'") return "\\'";
-      else if(match === "{") return "'+";
-      else if(match === "}") return "+'";
-    });
-    //.replace(/vm="on:\w+=(\w+)"+/g, 'vm-forkey-$1="true" vm-forkey="\'+ $key +\'"');
-    tpl = "return '"+ tpl +"';"
+    var tpl = $node.html().replace(/<!--|-->/g, "");
 
-    var render = new Function("$key,$value", tpl);
-    // console.log(render);
+    // By default, Underscore uses ERB-style template delimiters, change the
+    // following template settings to use alternative delimiters.
+    // _.templateSettings = {
+    //   evaluate    : /<%([\s\S]+?)%>/g,
+    //   interpolate : /<%=([\s\S]+?)%>/g,
+    //   escape      : /<%-([\s\S]+?)%>/g,
+    //   variable    : "data"
+    // };
+
+    // @todo: underscore >= 1.7.0, _.template accept 2 args
+    var render = _.template(tpl);
 
     // 传入 vmItemVal 为变化的 vm 数组项的值
     return function(vmItemVal) {
@@ -146,9 +146,14 @@ var VMhooks = {
 
       // Before re-render for vm's view, clean older dom
       $node.empty();
+
+      var args = _.clone(vmObj._filter);
       _.each(vmItemVal, function(value, key) {
-          // console.log(key, value);
-          var $itemNode = $(render(key, value));
+          args.$key = key;
+          args.$value = value
+          // console.log(args);
+
+          var $itemNode = $(render(args));
 
           $node.append($itemNode);
 
@@ -172,42 +177,6 @@ var VMhooks = {
   }
 
 };
-
-// Add a new method to Backbone.Model.prototype
-// support vm.delete("userlist[0]") using namespace
-// Backbone.Model.prototype.delete = function(key) {
-//   // get key, don't contains . or []
-//   if(key.indexOf(".") === -1 && key.indexOf("[") === -1) {
-//     return this.get(key);
-//   }
-
-//   var source = 'return obj.'+ key +';';
-//   try {
-//     var execValue = new Function("obj", source);
-//     return execValue(this.attributes);
-//   } catch(e) {
-//     // var e = ex;
-//     throw new Error("get "+ e.message +" error, source="+ source);
-//   }
-// };
-
-// Add a new method to Backbone.Model.prototype
-// support vm.read("userlist[0].name") using namespace
-// Backbone.Model.prototype.read = function(key) {
-//   // get key, don't contains . or []
-//   if(key.indexOf(".") === -1 && key.indexOf("[") === -1) {
-//     return this.get(key);
-//   }
-
-//   var source = 'return obj.'+ key +';';
-//   try {
-//     var execValue = new Function("obj", source);
-//     return execValue(this.attributes);
-//   } catch(e) {
-//     // var e = ex;
-//     throw new Error("get "+ e.message +" error, source="+ source);
-//   }
-// };
 
 // Create a plugin from backbone.js, Similar usage and backbone.view
 var VM = Backbone.VM = function(options) {

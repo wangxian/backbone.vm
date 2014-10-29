@@ -63,17 +63,18 @@
   <ul vm="for:userlist">
     <!--
     <li>
-      <p>索引：{$key}</p>
-      <p>姓名：{$value.name}</p>
-      <p>年龄：<i class="age">{$value.age}</i></p>
+      <p>$key：<%= $key %></p>
+      <p>$value: <%= json($value) %>
+      <p>姓名：<%= $value.name %></p>
+      <p>年龄：<i class="age"><%= $value.age %></i></p>
       <p><button type="button" vm="on:click=updateAge">update user age</button></p>
       <p>
         <button type="button" vm="on:click=updateAgeSilent">
-          update user age \-\-\- silent update <em>(Not update all for-view)</em>
+          update user age --- silent update <em>(Not update all for-view)</em>
         </button>
       </p>
       <p><button type="button" vm="on:click=deleteUser">delete user</button></p>
-      <p><button type="button" vm="on:click=deleteUserSilent">delete user \-\-\- silent</button></p>
+      <p><button type="button" vm="on:click=deleteUserSilent">delete user --- silent</button></p>
     </li>
     -->
   </ul>
@@ -89,7 +90,7 @@
   </code></pre>
   <ul vm="for:profile">
     <!--
-    <li>{$key}={$value}</li>
+    <li><%= $key %>=<%= $value %></li>
     -->
   </ul>
 
@@ -150,11 +151,11 @@ seajs.use(['jquery','src/backbone.vm'], function($, VM){
     },
 
     deleteUserSilent: function(e, key, $el) {
-       var userlist = this.get("userlist");
-        userlist.splice(key, 1);
-        this.set("userlist", userlist, {silent: true});
+      var userlist = this.get("userlist");
+      userlist.splice(key, 1);
+      this.set("userlist", userlist, {silent: true});
 
-        $el.remove();
+      $el.remove();
     },
 
     // initialize: function() {
