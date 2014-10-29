@@ -64,7 +64,7 @@
       <p>索引：{$key}</p>
       <p>姓名：{$value.name}</p>
       <p>年龄：{$value.age}</p>
-      <p><button type="button" vm="on:click=deleteUser">delete</button></p>
+      <p><button type="button" vm="on:click=deleteUser,on:touchstart=deleteUser">delete</button></p>
       <p><button type="button" vm="on:click=updateAge">update user age</button></p>
     </li>
     -->
@@ -118,15 +118,15 @@ seajs.use(['jquery','src/backbone.vm'], function($, VM){
     el: "#main",
 
     // bind button || delete user
-    deleteUser: function(e, key) {
-      // console.log("this->", this);
-      // console.log("e:", e);
-      // console.log("key->", key);
+    deleteUser: function(e, key, $el) {
+      console.log("this->", this);
+      console.log("$el:", $el.get(0));
+      console.log("key->", key);
 
       // re-render list
-      var userlist = this.get("userlist");
-      userlist.splice(key, 1);
-      this.set("userlist", userlist);
+      // var userlist = this.get("userlist");
+      // userlist.splice(key, 1);
+      // this.set("userlist", userlist);
     },
 
     updateAge: function(e, key) {

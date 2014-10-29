@@ -19,17 +19,17 @@ var vmAttrStripper = /\s+/g;
 var forTplReplaceStripper = /<!--|-->|\n|'|{|}/g;
 
 // for:struct match dom bind setting string
-var forTplOnStripper = /on:(\w+)=(\w+)/g;
+// var forTplOnStripper = /on:(\w+)=(\w+)/g;
 
 
 // Handle all struct vm attribute tags,
 // eg: html, text, on...
 var VMhooks = {
   // VM->DOM, text, html, val...
-  simple: function(node, funcName, filters) {
+  simple: function($node, funcName, filters) {
     return function(str) {
       _.each(filters, function(filter){ str = filter(str); });
-      node[funcName](str);
+      $node[funcName](str);
     };
   },
 
@@ -39,13 +39,13 @@ var VMhooks = {
   },
 
   // Show/Hide HTML element if vm item is true or false
-  show: function(node) {
-    return function(isShow) { node[isShow?'show':'hide'](); };
+  show: function($node) {
+    return function(isShow) { $node[isShow?'show':'hide'](); };
   },
 
   // Remove HTML element if vm item value is true
-  remove: function(node) {
-    return function(isRemoved) { if(isRemoved) node.remove(); };
+  remove: function($node) {
+    return function(isRemoved) { if(isRemoved) $node.remove(); };
   },
 
   // DOM->VM, checkbox on click
@@ -105,43 +105,70 @@ var VMhooks = {
     return function(){};
   },
 
-  // Bind for:struct each item delete element
+  //
   // , function(e, id) {
   // }
-  bindForListener: function(vmObj, funcName){
+  /**
+   * Bind for:struct each item delete element
+   * @param Object vmObj    vm object
+   * @param String funcName bind function name in vm object
+   * @param String itemKey bind current item vm key
+   * @param Object $el root each item of jquery node wrapper
+   */
+  bindForListener: function(vmObj, funcName, itemKey, $el){
     if(typeof vmObj[funcName] === "function") {
-      // return _.bind(vmObj[funcName], vmObj);
       return function(e) {
-        _.bind(vmObj[funcName], vmObj)( e, e.currentTarget.getAttribute("vm-forkey") );
+        _.bind(vmObj[funcName], vmObj)( e, itemKey, $el );
       };
+    } else {
+      return function(){};
     }
   },
 
-  forTemplate: function(node) {
-    var tpl = node.innerHTML;
+  forTemplate: function(vmObj, $node) {
+    var tpl = $node.html();
     tpl = tpl.replace(forTplReplaceStripper, function(match){
+      // console.log(match);
       if(match === "<!--" || match === "-->" || match === "\n") return "";
       else if(match === "'") return "\\'";
       else if(match === "{") return "'+";
       else if(match === "}") return "+'";
-    }).replace(/vm="on:\w+=(\w+)"+/g, 'vm-forkey-$1="true" vm-forkey="\'+ $key +\'"');
+    });
+    //.replace(/vm="on:\w+=(\w+)"+/g, 'vm-forkey-$1="true" vm-forkey="\'+ $key +\'"');
+    tpl = "return '"+ tpl +"';"
 
-    var source = "var isArray = Array.isArray ? Array.isArray(obj) : Object.prototype.toString.call(obj) === '[object Array]';";
-    source += "var out = '';";
-    source += "if(isArray){ ";
-    source += "for(var $key=0,_len=obj.length;$key<_len;$key++){ var $value = obj[$key]; out += '"+ tpl +"'; }";
-    source += "} else {";
-    source += "for(var $key in obj){ var $value = obj[$key]; out += '"+ tpl +"'; }";
-    source += "}; return out;";
-    var render = new Function("obj", source);
-    // console.log(source);
+    var render = new Function("$key,$value", tpl);
+    // console.log(render);
 
-    return function(obj) {
-      var type = Object.prototype.toString.call(obj);
-      if(type === "[object Array]" || type === "[object Object]") {
-        node.innerHTML = render(obj);
-      }
+    // 传入 vmItemVal 为变化的 vm 数组项的值
+    return function(vmItemVal) {
+      // console.log("re render for:struct")
+
+      // Before re-render for vm's view, clean older dom
+      $node.empty();
+      _.each(vmItemVal, function(value, key) {
+          // console.log(key, value);
+          var $itemNode = $(render(key, value));
+
+          $node.append($itemNode);
+
+          // 绑定for:struct循环中的事件绑定
+          $itemNode.find("[vm]").each(function(k, nodeHasVmAttr){
+            $nodeHasVmAttr = $(nodeHasVmAttr);
+            var vmNodeAttrList = nodeHasVmAttr.getAttribute("vm").replace(vmAttrStripper, "").split(",");
+            _.each(vmNodeAttrList, function(v){
+              var arr   = v.split(":");
+              var ev    = arr[1].split("=");
+              // console.log(nodeItem, vmKey, ev)
+              if(arr[0] === "on") {
+                // VMhooks.bindForListener()
+                $nodeHasVmAttr.on(ev[0], VMhooks.bindForListener(vmObj, ev[1], key, $itemNode));
+              }
+            });
+          });
+      });
     };
+
   }
 
 };
@@ -219,6 +246,12 @@ _.extend(VM.prototype, {
   // Default VM value
   defaults: {},
 
+  // jQuery delegate for element lookup, scoped to DOM elements within the
+  // current view. This should be preferred to global lookups where possible.
+  $: function(selector) {
+    return this.$el.find(selector);
+  },
+
   // Store filter function
   _filter: {
     uppercase: function(str) { return str.toUpperCase(); },
@@ -258,8 +291,8 @@ _.extend(VM.prototype, {
     var it = this;
     this.$el.find("[vm]").each(function(k, node){
       // VM HTML DOM node
-      var vmNodeEl   = node.getAttribute("vm").replace(vmAttrStripper, "").split(",");
-      _.each(vmNodeEl, function(v){
+      var vmNodeAttrList   = node.getAttribute("vm").replace(vmAttrStripper, "").split(",");
+      _.each(vmNodeAttrList, function(v){
         var arr = v.split(":");
         var vmKey = arr[0];
         var vmFilters = arr[1].split("|");
@@ -269,28 +302,20 @@ _.extend(VM.prototype, {
         if(vmKey === "on") {
           var ev = vmVal.split("=");
           // console.log(ev);
+          // add vm-dombind attribute, for unload vm, vm.destory()
           $(node).on( ev[0], VMhooks.bindEventListener(it, ev[1]) ).attr("vm-dombind", "");
         } else if(vmKey === "show") {
           it._attrs[ vmVal ] = [ VMhooks.show( $(node) ) ];
         } else if(vmKey === "remove") {
           it._attrs[ vmVal ] = [ VMhooks.remove( $(node) ) ];
         } else if(vmKey === "for") {
-          // bind for:struct dom event
-          var bindInfo;
-          var isAddforkey = false;
-          while( (bindInfo = forTplOnStripper.exec(node.innerHTML)) !== null) {
-            var $node = $(node).on( bindInfo[1], "[vm-forkey-"+ bindInfo[2] +"]", VMhooks.bindForListener(it, bindInfo[2]) );
-            if(!isAddforkey) {
-              isAddforkey = true;
-              $node.attr("vm-dombind", "");
-            }
-          }
+          // for:struct 处理逻辑
 
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
-          it._attrs[ vmVal ].push( VMhooks.forTemplate( node ) );
-        } else {
+          it._attrs[ vmVal ].push( VMhooks.forTemplate( it, $(node) ) );
 
-          // Bind VM -> DOM, for: text, val <-> vm model
+        } else {
+          // Simple VM Bind VM -> DOM, for: text, val <-> vm model
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
           if(node.type === "radio" || node.type === "checkbox") {
             if(! it.input[node.type][vmVal] ) {
@@ -307,7 +332,7 @@ _.extend(VM.prototype, {
               it.input[node.type][ vmVal ][node.value] = node;
             }
           } else {
-            // simple div
+            // contains: remove, html, text...
 
             // 支持 filter 功能，之前把 filter 准备好，做好调用 filter 的准备
             var filters = _.map(vmFilters, function(filter){
