@@ -2,19 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>simple demo - 2014-09-17</title>
+<title>simple demo - 2014-11-17</title>
 <style>input{ width: 60%; padding: 5px 8px; }</style>
-<script src="sea-debug.js?nowrap"></script>
-<script>
-  seajs.config({
-    base: "../",
-    alias: {
-      "backbone":"backbone/1.1.2/backbone.js",
-      "jquery":"jquery/1.10.2/jquery.js",
-      "underscore":"underscore/1.6.0/underscore.js"
-    }
-  });
-</script>
 <!--[if lt IE 9]>
 <script src="../static/js/html5shiv.js"></script>
 <![endif]-->
@@ -32,24 +21,22 @@
   <p>您的姓名为：<em vm="html:nickname"></em></p>
 </div>
 
+<script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
 <script>
-seajs.use(['jquery','src/backbone.vm'], function($, VM){
+seajs.config({base:'../'});
+seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
   var MainApp = VM.extend({
+    // Bind Dom id, Control of the scope of the VM
+    // So, you can define some VM object
+    el: "#main",
 
     // default vm value
     defaults: {
       nickname: "Nicholas C.Zakas"
-    },
-
-    // Bind Dom id, Control of the scope of the VM
-    // So, you can define some VM object
-    el: "#main"
-
+    }
   });
 
-  $(document).ready(function(){
-    new MainApp();
-  });
+  $(document).ready(function(){ new MainApp(); });
 });
 </script>
 

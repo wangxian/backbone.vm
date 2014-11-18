@@ -22,17 +22,6 @@
   button.dangerous:hover { background-color: #EC7063; }
 
 </style>
-<script src="sea-debug.js?nowrap"></script>
-<script>
-  seajs.config({
-    base: "../",
-    alias: {
-      "backbone":"backbone/1.1.2/backbone.js",
-      "jquery":"jquery/1.10.2/jquery.js",
-      "underscore":"underscore/1.6.0/underscore.js"
-    }
-  });
-</script>
 <!--[if lt IE 9]>
 <script src="../static/js/html5shiv.js"></script>
 <![endif]-->
@@ -75,8 +64,10 @@
 
 </div>
 
+<script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
 <script>
-seajs.use(['jquery','src/backbone.vm'], function($, VM){
+seajs.config({base:'../'});
+seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
   // for test
   window.$    = $;
   window.VM   = VM;
