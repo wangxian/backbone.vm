@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style>
+  .demo { padding: 10px; background-color: #efefef; }
+  h1 { border-bottom: 2px solid #efefef; padding: 15px 0 8px 0; }
+  h2 { font-size: 18px; margin: 40px 0 10px 0; }
+  input,button,select,textarea{ outline:none }
+
+  button {
+    border: 0; background-color: #1ABC9C;
+    padding: 8px 20px; color: white;
+    -webkit-transition: 0.25s;
+    -moz-transition: 0.25s;
+    -o-transition: 0.25s;
+    transition: 0.25s;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  button:hover { background-color: #48c9b0; }
+  button.dangerous { background-color: #E74C3C; }
+  button.dangerous:hover { background-color: #EC7063; }
+  button em { color: #999; font-size: 14px; }
+
+  pre { background-color: #EFEFEF; padding: 10px 0; }
+  li > p { margin: 5px 0; }
+
+</style>
+<!--[if lt IE 9]>
+<script src="../static/js/html5shiv.js"></script>
+<![endif]-->
+</head>
+<body>
+
+
+<div id="main">
+  <h1>struct for &amp; no-wrapper</h1>
+
+  <pre><code>
+  // JSON Object对象测试
+  // 假如数据结构如下：
+  profile = {
+    name: "西门吹雪",
+    age : 22,
+    nickname: "西门"
+  }
+  </code></pre>
+  <div vm="for:profile">
+    <!--
+    <p><%= $key %>=<%= $value %></p>
+    <a href="javascript:;" vm="on:click=update">delete</a>
+    -->
+  </div>
+
+</div>
+
+<script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
+<script>
+seajs.config({base:'../'});
+seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
+  // for test
+  window.$    = $;
+  window.VM   = VM;
+
+  var MainApp = VM.extend({
+    el: "#main",
+
+    // default vm value
+    defaults: {
+      // User info
+      profile: {
+        name: "西门吹雪",
+        age : 22,
+        nickname: "西门"
+      }
+    },
+
+    update: function(e, key, $el) {
+      console.log(e, key, $el.html());
+    }
+  });
+
+  $(document).ready(function(){ window.mainapp = new MainApp(); });
+});
+</script>
+
+</body>
+</html>

@@ -154,17 +154,19 @@ var VMhooks = {
           // console.log(args);
 
           var $itemNode = $(render(args));
-
           $node.append($itemNode);
 
+          // Fixed: 如果 for 模板里没有最外层的包装时，$(x) 是一个数组
+          $itemNodeHasVM = $itemNode.length > 1 ? $itemNode.filter("[vm]") : $itemNode.find("[vm]")
+
           // 绑定for:struct循环中的事件绑定
-          $itemNode.find("[vm]").each(function(k, nodeHasVmAttr){
+          $itemNodeHasVM.each(function(k, nodeHasVmAttr){
             $nodeHasVmAttr = $(nodeHasVmAttr);
             var vmNodeAttrList = nodeHasVmAttr.getAttribute("vm").replace(vmAttrStripper, "").split(",");
             _.each(vmNodeAttrList, function(v){
               var arr   = v.split(":");
               var ev    = arr[1].split("=");
-              // console.log(nodeItem, vmKey, ev)
+              // console.log(ev);
               if(arr[0] === "on") {
                 // VMhooks.bindForListener()
                 $nodeHasVmAttr.on(ev[0], VMhooks.bindForListener(vmObj, ev[1], key, $itemNode));
