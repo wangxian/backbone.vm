@@ -385,6 +385,11 @@ _.extend(VM.prototype, {
     if(!silent) this._vm.trigger("change", this._vm);
   },
 
+  // 把  VM 转换为 JSON 对象
+  toJSON: function() {
+    return this._vm.toJSON();
+  },
+
   // destory VM object when a new vm is not used
   // clear vm variable, unbind dom delegate
   // @todo ...
