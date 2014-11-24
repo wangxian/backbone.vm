@@ -236,7 +236,7 @@ _.extend(VM.prototype, {
 
   // VM's model, Your app can use it to set VM value
   // eg, this._vm.set("name", "tom")
-  vm: null,
+  _vm: null,
 
   // Store input[type=radio] & input[type=checkbox] bind data
   input: {
