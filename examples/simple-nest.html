@@ -12,31 +12,40 @@
 
 
 <div id="main">
-  <h1>SIMPLE DEMO</h1>
+  <h1>VM 嵌套</h1>
 
   <h2>请输入姓名：</h2>
   <p>
     <input id="nickname" type="text" name="nickname" vm="val:nickname" />
   </p>
   <p>您的姓名为：<em vm="html:nickname"></em></p>
+  <p>年龄：<em vm="html:age"></em></p>
 </div>
 
 <script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
 <script>
 seajs.config({base:'../'});
 seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
-  var MainApp = VM.extend({
-    // Bind Dom id, Control of the scope of the VM
-    // So, you can define some VM object
-    el: "#main",
-
-    // default vm value
+  var MainApp1 = VM.extend({
+    el: "body",
     defaults: {
       nickname: "Nicholas C.Zakas"
     }
   });
 
-  $(document).ready(function(){ new MainApp(); });
+  var MainApp2 = VM.extend({
+    el: "#main",
+    defaults: {
+      nickname: "Nicholas C.Zakas",
+      age: 35
+    }
+  });
+
+
+  $(document).ready(function(){
+    window.vm1 = new MainApp1();
+    window.vm2 = new MainApp2();
+  });
 });
 </script>
 

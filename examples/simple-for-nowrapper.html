@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>simple demo - 2014-08-16</title>
+<title></title>
 <style>
+  .demo { padding: 10px; background-color: #efefef; }
   h1 { border-bottom: 2px solid #efefef; padding: 15px 0 8px 0; }
   h2 { font-size: 18px; margin: 40px 0 10px 0; }
   input,button,select,textarea{ outline:none }
@@ -15,11 +16,16 @@
     -moz-transition: 0.25s;
     -o-transition: 0.25s;
     transition: 0.25s;
-    border-radius: 5px;
+    border-radius: 8px;
+    font-size: 16px;
   }
   button:hover { background-color: #48c9b0; }
   button.dangerous { background-color: #E74C3C; }
   button.dangerous:hover { background-color: #EC7063; }
+  button em { color: #999; font-size: 14px; }
+
+  pre { background-color: #EFEFEF; padding: 10px 0; }
+  li > p { margin: 5px 0; }
 
 </style>
 <!--[if lt IE 9]>
@@ -30,11 +36,23 @@
 
 
 <div id="main">
-  <h1>dom event bind</h1>
-  <p>
-    <button id="btn-click-me" type="button" vm="on:click=clickMe">点我+++++</button>
-  </p>
-  <p>点击次数：<i vm="text:clickCount">-</i></p>
+  <h1>struct for &amp; no-wrapper</h1>
+
+  <pre><code>
+  // JSON Object对象测试
+  // 假如数据结构如下：
+  profile = {
+    name: "西门吹雪",
+    age : 22,
+    nickname: "西门"
+  }
+  </code></pre>
+  <div vm="for:profile">
+    <!--
+    <p><%= $key %>=<%= $value %></p>
+    <a href="javascript:;" vm="on:click=update">delete</a>
+    -->
+  </div>
 
 </div>
 
@@ -47,29 +65,24 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
   window.VM   = VM;
 
   var MainApp = VM.extend({
-
-    defaults: {
-      clickCount: 0
-    },
-
     el: "#main",
 
-    // When click button#btn-click-me
-    clickMe: function(e) {
-      // console.log("this", this);
-      // console.log("e:", e);
-      // var _e = e.currentTarget;
-      // console.log(_e.type);
+    // default vm value
+    defaults: {
+      // User info
+      profile: {
+        name: "西门吹雪",
+        age : 22,
+        nickname: "西门"
+      }
+    },
 
-      var clickCount = this.get("clickCount") + 1;
-      this.set("clickCount", clickCount );
+    update: function(e, key, $el) {
+      console.log(e, key, $el.html());
     }
   });
 
-  $(document).ready(function(){
-    // init new MainApp, for test
-    window.mainapp = new MainApp();
-  });
+  $(document).ready(function(){ window.mainapp = new MainApp(); });
 });
 </script>
 

@@ -8,6 +8,16 @@ A VM plugin for backbone.js
 
 ---
 
+## Introduction
+
+基于 Backbone 的 MVVM, 轻量体积（压缩后4k），兼容多浏览器
+
+
+## Browser Support
+
+IE6+, Chrome, Firefox ...
+
+
 ## Install
 
 ```
@@ -42,20 +52,13 @@ var MainApp = Backbone.VM.extend({
   
   // default vm value
   defaults: {
-    "nickname": "wang xian",
-    "age"     : 99,
-    "friends" : ["sa", "sb", "sc"]
+    "nickname": "Nicholas C.Zakas"
   },
   
-  // At initialization we do something
-  initialize: function() {
-    // do something...
-  }
 });
 
 $(document).ready(function(){
-  // init new MainApp, for test
-  window.mainapp = new MainApp();
+  new MainApp();
 });
 
 ```
@@ -82,7 +85,7 @@ $(document).ready(function(){
 读写from input的值
 
 ### show
-是否显示显示 html 元素标签, 
+是否显示显示 html 元素, 
 
 如果绑定的值 !!variable 是`true` 显示 `false` 隐藏
 
@@ -100,15 +103,15 @@ $(document).ready(function(){
 // 假如
 var userlist = [
   {"name": "antoy", "age": 22},
-  {"name": "tom", "age": 23}
+  {"name": "lucy",   "age": 23}
 ];
 
 <ul vm="for:userlist">
   <!-- 
   <li>
-    <p>索引：{$key}</p>
-    <p>姓名：{$value.name}</p>
-    <p>年龄：{$value.age}</p>
+    <p>索引：<%= $key %></p>
+    <p>姓名：<%= $value.name %></p>
+    <p>年龄：<%= $value.age %></p>
   </li>
   -->
 </ul>
