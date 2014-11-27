@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style>
+  input{ width: 400px; height: 20px; }
+</style>
+<!--[if lt IE 9]>
+<script src="../static/js/html5shiv.js"></script>
+<![endif]-->
+</head>
+<body>
+
+
+<div id="main">
+  <h1>测试表单 input 绑定及自定义事件</h1>
+
+  <p>W:<input type="range" min="0" max="400" vm="val:w" /></p>
+  <p>H:<input type="number" vm="val:h,on:keyup=updateHeight" /></p>
+
+  <div style="background: #ff8a00;-webkit-transition: all .5s ease-out;" vm="css:bstyle"></div>
+
+</div>
+
+<script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
+<script>
+seajs.config({base:'../'});
+seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
+  // for test
+  window.$    = $;
+  window.VM   = VM;
+
+  var MainApp = VM.extend({
+    defaults: {
+      w: 10,
+      h: 10,
+      bstyle: {
+        width: 10,
+        height: 10
+      }
+    },
+
+    el: "#main",
+
+    initialize: function() {
+      this.on("change:w change:h", function(m){
+        this.set("bstyle", {width: this.get("w"), "height": this.get("h")} );
+      });
+    },
+    updateHeight: function(e) {
+      this.set("h", e.target.value);
+    }
+  });
+  window.mainapp = new MainApp();
+});
+</script>
+
+</body>
+</html>
