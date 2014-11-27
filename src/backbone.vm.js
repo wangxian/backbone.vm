@@ -385,6 +385,14 @@ _.extend(VM.prototype, {
     if(!silent) this._vm.trigger("change", this._vm);
   },
 
+  // Rewrite：
+  // Model 的 Events 方法
+  on: function(event, callback, context) { if(!context) context = this; this._vm.on(event, callback, context); },
+  off: function(event, callback, context) { if(!context) context = this; this._vm.off(event, callback, context); },
+  once: function(event, callback, context) { if(!context) context = this; this._vm.once(event, callback, context); },
+  trigger: function() { this._vm.on.apply(this._vm, arguments); },
+
+
   // 把  VM 转换为 JSON 对象
   toJSON: function() {
     return this._vm.toJSON();
