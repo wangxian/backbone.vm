@@ -247,12 +247,11 @@ _.extend(VM.prototype, {
   // Update VM bind node when vm model is updated
   _updateVM: function(model) {
     // console.info("model updated:", model.changed, model.toJSON());
-    var it = this;
     var attrs = _.pick(this._attrs, _.keys(model.changed));
     // console.log(attrs);
     _.each(attrs, function(v, k){
       _.each(v, function(func){
-        func(it._vm.get(k));
+        func(model.get(k));
       });
     });
   },
