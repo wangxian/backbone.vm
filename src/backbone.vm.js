@@ -350,19 +350,20 @@ _.extend(VM.prototype, {
   // support update model every time
   // support vm.update("userlist[0].name") using namespace
   set: function(key, value, options) {
-    var attr, changed;
     if(typeof options === "undefined") options = {};
     var silent = options.silent;
 
     if(typeof key === "object") {
-      this._vm.changed = key;
-      for(attr in key) this._vm.attributes[attr] = key[attr];
+      this._vm.set(key, options);
     } else {
       var firstKeyPos = key.search(/\[|\./);
 
       if(firstKeyPos === -1) {
-        this._vm.attributes[key] = value;
+        this._vm.set(key, value, options);
       } else {
+        // previous vm data
+        this._vm._previousAttributes = _.clone(this._vm.attributes);
+
         var newKey   = key;
         var key      = newKey.slice(0, firstKeyPos);
         var lastKey  = newKey.slice(firstKeyPos);
@@ -372,16 +373,18 @@ _.extend(VM.prototype, {
         try {
           var execValue = new Function("obj,value", source);
           execValue(itemObj, value);
+
+          var changed = {};
+          changed[key] = value;
+          this._vm.changed = changed;
+          if(!silent) this._vm.trigger("change:"+ key, this._vm);
+          if(!silent) this._vm.trigger("change", this._vm);
         } catch(e) {
           // var e = ex;
           throw new Error("update "+ key + lastKey+" error, source="+ source);
         }
       }
-      (changed = {})[key] = value;
-      this._vm.changed = changed;
-      if(!silent) this._vm.trigger("change:"+ key, this._vm);
     }
-    if(!silent) this._vm.trigger("change", this._vm);
   },
 
   // Rewrite：
