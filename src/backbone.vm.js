@@ -196,9 +196,8 @@ var VM = Backbone.VM = function(options) {
   //   console.log(arguments);
   // });
   this._vm.on("change", this._updateVM, this);
-  this._vm.set(this.defaults);
-
   this.initialize.apply(this, arguments);
+  this._vm.set(this.defaults);
 };
 
 _.extend(VM.prototype, {
