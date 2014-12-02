@@ -26,9 +26,7 @@
 <script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
 <script>
 seajs.config({base:'../'});
-seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
-  // for test
-  window.$    = $;
+seajs.use(['src/backbone.vm'], function(VM){
   window.VM   = VM;
 
   var MainApp = VM.extend({
@@ -45,8 +43,13 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
 
     initialize: function() {
       this.on("change:w change:h", function(m){
+        // console.log(m.changed, m.previous("h"));
         this.set("bstyle", {width: this.get("w"), "height": this.get("h")} );
       });
+
+      // this.on("change:bstyle", function(m){
+      //   console.log(m.changed, "bstyle 变了");
+      // });
     },
     updateHeight: function(e) {
       this.set("h", e.target.value);
