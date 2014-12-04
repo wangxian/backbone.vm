@@ -16,10 +16,10 @@
 <div id="main">
   <h1>测试表单 input 绑定及自定义事件</h1>
 
-  <p>W:<input type="range" min="0" max="400" vm="val:w" /></p>
+  <p>W:<input type="range" min="0" max="1000" vm="val:w" /></p>
   <p>H:<input type="number" vm="val:h,on:keyup=updateHeight" /></p>
 
-  <div style="background: #ff8a00;-webkit-transition: all .5s ease-out;" vm="css:bstyle"></div>
+  <div style="background: #ff8a00;-webkit-transition: all .9s ease-out;" vm="css:bstyle"></div>
 
 </div>
 
@@ -31,11 +31,11 @@ seajs.use(['src/backbone.vm'], function(VM){
 
   var MainApp = VM.extend({
     defaults: {
-      w: 10,
-      h: 10,
+      w: 5,
+      h: 200,
       bstyle: {
-        width: 10,
-        height: 10
+        width: 0,
+        height: 0
       }
     },
 

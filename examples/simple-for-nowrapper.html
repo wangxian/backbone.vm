@@ -51,6 +51,7 @@
     <!--
     <p><%= $key %>=<%= $value %></p>
     <a href="javascript:;" vm="on:click=update">delete</a>
+    <hr />
     -->
   </div>
 
@@ -78,7 +79,10 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
     },
 
     update: function(e, key, $el) {
-      console.log(e, key, $el.html());
+      // console.log(e, key, $el.html());
+      delete this.get("profile")[key];
+      // console.log(this.get("profile"));
+      $el.remove();
     }
   });
 
