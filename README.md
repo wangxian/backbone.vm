@@ -10,12 +10,10 @@ A VM plugin for backbone.js
 
 ## Introduction
 
-基于 Backbone 的 MVVM, 轻量体积（压缩后4k），兼容多浏览器
-
-
-## Browser Support
-
-IE6+, Chrome, Firefox ...
+- 让 Backbone 支持 MVVM
+- 轻量体积（压缩后4k）
+- 兼容主流浏览器（IE6+, Chrome, Safari, Firefox ...）
+- 十分钟快速上手
 
 
 ## Install
@@ -23,6 +21,12 @@ IE6+, Chrome, Firefox ...
 ```
 $ spm install backbone.vm --save
 ```
+
+## Dependencies
+
+- Backbone.js 1.0+
+- Underscore.js or Lo-Dash
+- jQuery1.x or jQuery 2.x or Zepto.js
 
 ## Usage
 
@@ -43,18 +47,18 @@ $ spm install backbone.vm --save
 app.js 的内容：
 
 ```js
-// use backbone.vm
-var MainApp = Backbone.VM.extend({
+// use VM
+var MainApp = VM.extend({
 
   // Bind Dom id, Control of the scope of the VM
   // So, you can define some VM object
   el: "#main",
-  
+
   // default vm value
   defaults: {
     "nickname": "Nicholas C.Zakas"
   },
-  
+
 });
 
 $(document).ready(function(){
@@ -66,12 +70,12 @@ $(document).ready(function(){
 
 ## Support struct tags
 
-使用方法，再html标签上添加，vm="x:y", 如果有多个使用逗号分割，  
+使用方法，再html标签上添加，vm="x:y", 如果有多个使用逗号分割，
 详细的使用方法，可参考examples目录中的例子。
 
 支持的所有的标签功能:
 
-### html 
+### html
 使用 jQuery html() 读写节点内容
 
 ### text
@@ -85,7 +89,7 @@ $(document).ready(function(){
 读写from input的值
 
 ### show
-是否显示显示 html 元素, 
+是否显示显示 html 元素,
 
 如果绑定的值 !!variable 是`true` 显示 `false` 隐藏
 
@@ -93,8 +97,7 @@ $(document).ready(function(){
 移除 DOM 元素
 
 ### on
-绑定HTML dom Event，用法，on:click=xxxFunc
-
+绑定HTML dom Event，用法，on:click=customFuncName
 
 ### for
 循环显示数据， 如：
@@ -107,7 +110,7 @@ var userlist = [
 ];
 
 <ul vm="for:userlist">
-  <!-- 
+  <!--
   <li>
     <p>索引：<%= $key %></p>
     <p>姓名：<%= $value.name %></p>
@@ -117,9 +120,11 @@ var userlist = [
 </ul>
 ```
 
-userlist 可以是 array 或 json object，如果是array key为数字索引，  
+userlist 可以是 array 或 json object，如果是array key为数字索引，
 如果是 object， 则key为object key索引。
 
 
 
+## Others
 
+暂无
