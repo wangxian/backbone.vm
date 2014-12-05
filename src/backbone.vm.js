@@ -1,4 +1,4 @@
-//  Backbone.vm.js 1.0.0
+//  Backbone.vm.js 1.2.0
 
 //  (c) 2013-2014 wangxian, DocumentCloud and Investigative Reporters & Editors
 //  Backbone may be freely distributed under the MIT license.
@@ -153,18 +153,18 @@ var VMhooks = {
       var args = _.clone(vmObj._filter);
       _.each(vmItemVal, function(value, key) {
           args.$key = key;
-          args.$value = value
+          args.$value = value;
           // console.log(args);
 
           var $itemNode = $(render(args));
           $node.append($itemNode);
 
           // Fixed: 如果 for 模板里没有最外层的包装时，$(x) 是一个数组
-          $itemNodeHasVM = $itemNode.length > 1 ? $itemNode.filter("[vm]") : $itemNode.find("[vm]")
+          var $itemNodeHasVM = $itemNode.length > 1 ? $itemNode.filter("[vm]") : $itemNode.find("[vm]");
 
           // 绑定for:struct循环中的事件绑定
           $itemNodeHasVM.each(function(k, nodeHasVmAttr){
-            $nodeHasVmAttr = $(nodeHasVmAttr);
+            var $nodeHasVmAttr = $(nodeHasVmAttr);
             var vmNodeAttrList = nodeHasVmAttr.getAttribute("vm").replace(vmAttrStripper, "").split(",");
             _.each(vmNodeAttrList, function(v){
               var arr   = v.split(":");
@@ -319,7 +319,7 @@ _.extend(VM.prototype, {
                   // 支持，直接调用 underscore.js 作为 filter
                   return _[filterName].apply(null, args);
                 }
-              }
+              };
             });
             // console.log(filters);
 
@@ -367,7 +367,8 @@ _.extend(VM.prototype, {
         this._vm._previousAttributes = _.clone(this._vm.attributes);
 
         var newKey   = key;
-        var key      = newKey.slice(0, firstKeyPos);
+        key = newKey.slice(0, firstKeyPos);
+
         var lastKey  = newKey.slice(firstKeyPos);
         var itemObj  = this._vm.attributes[key];
 
