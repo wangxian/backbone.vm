@@ -133,25 +133,13 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
       // console.log("key->", key);
 
       // re-render list
-      var userlist = this.get("userlist");
-      userlist.splice(key, 1);
-      this.set("userlist", userlist);
+      this.unset("userlist["+ key +"]");
     },
 
     deleteUserSilent: function(e, key, $el) {
-      var userlist = this.get("userlist");
-      userlist.splice(key, 1);
-      this.set("userlist", userlist, {silent: true});
-
+      this.unset("userlist["+ key +"]", {silent: true});
       $el.remove();
-    },
-
-    // initialize: function() {
-    //   // this._vm.on("all", function(){
-    //   //   console.log(arguments);
-    //   // });
-    // }
-
+    }
   });
 
   $(document).ready(function(){
