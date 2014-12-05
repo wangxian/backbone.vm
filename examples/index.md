@@ -11,6 +11,7 @@
 - [simple-css](simple-css.html)
 - [simple-filter](filter-1.html)
 - [for-table](simple-for-table.html)
+- [for-table-operate](simple-for-table-operate.html)
 - [for-nowrapper](simple-for-nowrapper.html)
 
 # 进阶

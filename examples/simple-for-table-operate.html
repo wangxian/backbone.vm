@@ -14,24 +14,29 @@ table tr.even { background-color: #efefef; }
 
 
 <div id="main">
-  <h1>for demo</h1>
+  <h1>for-table-operate</h1>
 
   <table>
     <thead>
       <tr>
         <td width="10%">Id</td>
-        <td width="30%">Name</td>
+        <td width="20%">Name</td>
         <td>Street</td>
+        <td width="20%">Operate</td>
       </tr>
     </thead>
     <tbody vm="for:users">
       <tr>
-        <td colspan="3">loading...</td>
+        <td colspan="4">loading...</td>
       </tr>
       <!-- <tr class="<%= ($key+1)%2==0 ? 'even': '' %>">
         <td><%= $value.id %></td>
         <td><%= $value.name %></td>
         <td><%= $value.addr %></td>
+        <td>
+          <a href="javascript:;" vm="on:click=onDelete">delete</a>
+          <a href="javascript:;" vm="on:click=onEdit">edit</a>
+        </td>
       </tr> -->
     </tbody>
   </table>
@@ -51,6 +56,18 @@ seajs.use(['src/backbone.vm'], function(VM){
         {id: 4, name: "Lucy", addr: "20 grave road"},
         {id: 5, name: "Big Jim", addr: "39 liangmaqiao street"}
       ]
+    },
+
+    onDelete: function(e, key, $el) {
+      this.unset("users["+ key +"]")
+    },
+
+    onEdit: function(e, key, $el){
+      // 例如：修改街道地址
+      this.set("users["+ key +"].addr", new Date);
+
+      // 当前信息
+      alert("key="+ key +"\n"+"value="+ JSON.stringify( this.get("users")[key]) );
     }
   });
 
