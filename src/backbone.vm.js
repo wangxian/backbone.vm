@@ -354,14 +354,14 @@ _.extend(VM.prototype, {
   set: function(key, value, options) {
     if(typeof options === "undefined") options = {};
     var silent = options.silent;
+    var unset  = options.unset;
 
     if(typeof key === "object") {
       this._vm.set(key, options);
     } else {
       var firstKeyPos = key.search(/\[|\./);
-
       if(firstKeyPos === -1) {
-        this._vm.set(key, value, options);
+        // this._vm.set(key, value, options);
       } else {
         // previous vm data
         this._vm._previousAttributes = _.clone(this._vm.attributes);
@@ -371,7 +371,19 @@ _.extend(VM.prototype, {
         var lastKey  = newKey.slice(firstKeyPos);
         var itemObj  = this._vm.attributes[key];
 
-        var source = 'obj'+ lastKey +'=value;';
+        var source = "";
+        if(!unset) source = 'obj'+ lastKey +'=value;';
+        else {
+          var lastKeyPos = Math.max(lastKey.lastIndexOf("."), lastKey.lastIndexOf("["));
+          var lastFrameBefore = lastKey.slice(0, lastKeyPos);
+
+          // 只有父节点类型是数组的时候才使用
+          var lastFrameEnd = lastKey.slice(lastKeyPos+1, -1);
+          // console.log(key, lastFrameBefore, ">>>>>",lastKey, lastFrameEnd);
+          source = 'if(Object.prototype.toString.call(obj'+ lastFrameBefore +') === "[object Array]"){ obj'+ lastFrameBefore +'.splice('+ lastFrameEnd +',1); }else{ delete obj'+ lastKey +';}';
+          // console.log(source);
+        }
+
         try {
           var execValue = new Function("obj,value", source);
           execValue(itemObj, value);
@@ -387,6 +399,13 @@ _.extend(VM.prototype, {
         }
       }
     }
+    return this;
+  },
+
+  // Remove an attribute from the VM
+  unset: function(attr, options) {
+    options = _.extend({}, options, {unset: true});
+    return this.set(attr, null, options);
   },
 
   // Rewrite：
