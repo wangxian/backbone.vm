@@ -1,6 +1,6 @@
 {
   "name": "backbone.vm",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "A VM plugin for backbone",
   "keywords": [],
   "homepage": "https://github.com/wangxian/backbone.vm.js",

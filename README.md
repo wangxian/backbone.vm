@@ -11,7 +11,7 @@ A VM plugin for backbone.js
 ## Introduction
 
 - 让 Backbone 支持 MVVM
-- 轻量体积（压缩后4k）
+- 轻量体积（压缩后<2k）
 - 兼容主流浏览器（IE6+, Chrome, Safari, Firefox ...）
 - 十分钟快速上手
 
