@@ -126,7 +126,10 @@ var VMhooks = {
   },
 
   forTemplate: function(vmObj, $node) {
-    var tpl = $node.html().replace(/<!--|-->/g, "");
+    // Only match comments in for:struct
+    var tpl = $node.html().match(/<!--([\s\S]*)-->/g);
+    tpl = tpl !== null ? tpl[0].replace(/<!--|-->/g, "") : "";
+    // console.log(tpl);
 
     // By default, Underscore uses ERB-style template delimiters, change the
     // following template settings to use alternative delimiters.
