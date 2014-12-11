@@ -7,5 +7,5 @@ define(function(require, exports, module){
     }
   });
   window.b = new B();
-  console.dir(b);
+  // console.dir(b);
 });

@@ -10,5 +10,5 @@ define(function(require, exports, module){
     }
   });
   window.a = new A();
-  console.dir(a);
+  // console.dir(a);
 });
