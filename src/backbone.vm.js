@@ -49,18 +49,22 @@ var VMhooks = {
   checkboxOnClick: function(vm, name) {
     return function() {
       var checkboxList = vm.get(name);
-      var checked = this.checked;
       var value   = this.value;
       if(! _.isArray(checkboxList)) checkboxList = [];
-      // if(_.contains(checkboxList, this.value)) {
-      //   if(this.checked)
-      // }
-      if(!checked){
+
+      if(!this.checked){
         checkboxList = _.filter(checkboxList, function(num){ return num !== value; });
       } else {
         checkboxList.push(value);
       }
-      vm.set(name, checkboxList);
+      vm._vm.set(name, checkboxList, {silent: true});
+
+      var changed;
+      (changed = {})[name] = checkboxList;
+      vm._vm.changed = changed;
+
+      vm._vm.trigger("change:"+name, vm._vm, this);
+      vm.trigger("change", vm._vm, vm);
     };
   },
 
@@ -149,30 +153,30 @@ var VMhooks = {
 
       var args = _.clone(vmObj._filter);
       _.each(vmItemVal, function(value, key) {
-          args.$key = key;
-          args.$value = value;
-          // console.log(args);
+        args.$key = key;
+        args.$value = value;
+        // console.log(args);
 
-          var $itemNode = $(render(args));
-          $node.append($itemNode);
+        var $itemNode = $(render(args));
+        $node.append($itemNode);
 
-          // Fixed: 如果 for 模板里没有最外层的包装时，$(x) 是一个数组
-          var $itemNodeHasVM = $itemNode.length > 1 ? $itemNode.filter("[vm]") : $itemNode.find("[vm]");
+        // Fixed: 如果 for 模板里没有最外层的包装时，$(x) 是一个数组
+        var $itemNodeHasVM = $itemNode.length > 1 ? $itemNode.filter("[vm]") : $itemNode.find("[vm]");
 
-          // 绑定for:struct循环中的事件绑定
-          $itemNodeHasVM.each(function(k, nodeHasVmAttr){
-            var $nodeHasVmAttr = $(nodeHasVmAttr);
-            var vmNodeAttrList = nodeHasVmAttr.getAttribute("vm").replace(vmAttrStripper, "").split(",");
-            _.each(vmNodeAttrList, function(v){
-              var arr   = v.split(":");
-              var ev    = arr[1].split("=");
-              // console.log(ev);
-              if(arr[0] === "on") {
-                // VMhooks.bindForListener()
-                $nodeHasVmAttr.on(ev[0], VMhooks.bindForListener(vmObj, ev[1], key, $itemNode));
-              }
-            });
+        // 绑定for:struct循环中的事件绑定
+        $itemNodeHasVM.each(function(k, nodeHasVmAttr){
+          var $nodeHasVmAttr = $(nodeHasVmAttr);
+          var vmNodeAttrList = nodeHasVmAttr.getAttribute("vm").replace(vmAttrStripper, "").split(",");
+          _.each(vmNodeAttrList, function(v){
+            var arr   = v.split(":");
+            var ev    = arr[1].split("=");
+            // console.log(ev);
+            if(arr[0] === "on") {
+              // VMhooks.bindForListener()
+              $nodeHasVmAttr.on(ev[0], VMhooks.bindForListener(vmObj, ev[1], key, $itemNode));
+            }
           });
+        });
       });
     };
 
@@ -368,12 +372,13 @@ _.extend(VM.prototype, {
           // console.log(source);
         }
 
-        // previous vm data
-        this._vm._previousAttributes = _.clone(this._vm.attributes);
 
         try {
           var execValue = new Function("obj,value", source);
           execValue(itemObj, value);
+
+          // previous vm data
+          this._vm._previousAttributes = _.clone(this._vm.attributes);
 
           var changed = {};
           changed[key] = value;
@@ -402,7 +407,7 @@ _.extend(VM.prototype, {
   on: function(event, callback, context) { if(!context) context = this; this._vm.on(event, callback, context); },
   off: function(event, callback, context) { if(!context) context = this; this._vm.off(event, callback, context); },
   once: function(event, callback, context) { if(!context) context = this; this._vm.once(event, callback, context); },
-  trigger: function() { this._vm.on.apply(this._vm, arguments); },
+  trigger: function() { this._vm.trigger.apply(this._vm, arguments); },
 
 
   // 把  VM 转换为 JSON 对象
