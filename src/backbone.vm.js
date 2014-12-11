@@ -9,9 +9,6 @@ var $        = require("jquery");
 var _        = require("underscore");
 var Backbone = require("backbone");
 
-// List of view options to be merged as properties.
-var vmOptions = ["el", "defaults"];
-
 // Cached regex for stripping vm node attributes. space, \r \n
 var vmAttrStripper = /\s+/g;
 
@@ -180,15 +177,20 @@ var VMhooks = {
     };
 
   }
-
 };
 
 // Create a plugin from backbone.js, Similar usage and backbone.view
 var VM = Backbone.VM = function(options) {
   this.cid = _.uniqueId('vm');
   if(!options) { options = {}; }
-  _.extend(this, _.pick(options, vmOptions));
-  _.extend(this._filter, this.filter);
+  this._filter = _.extend({}, this._filterDefault, this.filter);
+
+  // Store the relationship between Dom and model
+  // eg, { "nickname":[ function(){}, .... ]}
+  this._attrs = {};
+
+  // Store input[type=radio] & input[type=checkbox] bind data
+  this.input = { radio: {}, checkbox: {} };
 
   this.$el = $(this.el);
   this._vm  = new Backbone.Model();
@@ -209,12 +211,6 @@ _.extend(VM.prototype, {
   // When user's app not defined, set the defulat el 'body'
   el: "body",
 
-  // Wrapper el using jQuery
-  $el: null,
-
-  // Store the relationship between Dom and model
-  // eg, { "nickname":[ function(){}, .... ]}
-  _attrs: {},
 
   // Default VM value
   defaults: {},
@@ -226,7 +222,7 @@ _.extend(VM.prototype, {
   },
 
   // Store filter function
-  _filter: {
+  _filterDefault: {
     uppercase: function(str) { return str.toUpperCase(); },
     lowercase: function(str) { return str.toLowerCase(); },
     json: function(obj, pretty) { return JSON.stringify(obj, null, pretty ? '  ' : null); }
@@ -235,16 +231,6 @@ _.extend(VM.prototype, {
   // Initialize is an empty function by default. Override it with your own
   // initialization logic.
   initialize: function() {},
-
-  // VM's model, Your app can use it to set VM value
-  // eg, this._vm.set("name", "tom")
-  _vm: null,
-
-  // Store input[type=radio] & input[type=checkbox] bind data
-  input: {
-    radio: {},
-    checkbox: {}
-  },
 
   // Update VM bind node when vm model is updated
   _updateVM: function(model) {
@@ -433,7 +419,6 @@ _.extend(VM.prototype, {
     this._attrs = null;
     this.input  = null;
   }
-
 });
 
 // Set up inheritance for the VM
