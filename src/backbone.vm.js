@@ -347,8 +347,7 @@ _.extend(VM.prototype, {
     } else {
       var firstKeyPos = key.search(/\[|\./);
       if(firstKeyPos === -1) {
-        this._vm.attributes[key] = value;
-        this._vm.changed = changed;
+        this._vm.set(key, value);
       } else {
         var newKey   = key;
         key = newKey.slice(0, firstKeyPos);
@@ -369,24 +368,24 @@ _.extend(VM.prototype, {
           // console.log(source);
         }
 
+        // previous vm data
+        this._vm._previousAttributes = _.clone(this._vm.attributes);
+
         try {
           var execValue = new Function("obj,value", source);
           execValue(itemObj, value);
+
+          var changed = {};
+          changed[key] = value;
+          this._vm.changed = changed;
+          if(!silent) {
+            this._vm.trigger("change:"+ key, this._vm);
+            this._vm.trigger("change", this._vm);
+          }
         } catch(e) {
           // var e = ex;
           throw new Error("update "+ key + lastKey+" error, source="+ source);
         }
-      }
-
-      // previous vm data
-      this._vm._previousAttributes = _.clone(this._vm.attributes);
-
-      var changed = {};
-      changed[key] = value;
-      this._vm.changed = changed;
-      if(!silent) {
-        this._vm.trigger("change:"+ key, this._vm);
-        this._vm.trigger("change", this._vm);
       }
     }
     return this;
