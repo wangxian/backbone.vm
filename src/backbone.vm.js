@@ -190,7 +190,7 @@ var VM = Backbone.VM = function(options) {
   this._attrs = {};
 
   // Store input[type=radio] & input[type=checkbox] bind data
-  this.input = { radio: {}, checkbox: {} };
+  this._input = { radio: {}, checkbox: {} };
 
   this.$el = $(this.el);
   this._vm  = new Backbone.Model();
@@ -276,18 +276,18 @@ _.extend(VM.prototype, {
           // Simple VM Bind VM -> DOM, for: text, val <-> vm model
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
           if(node.type === "radio" || node.type === "checkbox") {
-            if(! it.input[node.type][vmVal] ) {
-              // When it.input.[node.type][vmVal] is empty
+            if(! it._input[node.type][vmVal] ) {
+              // When it._input.[node.type][vmVal] is empty
               // input.[node.type] like { "age":{"1": Node }}
               var ri = {};
               ri[ node.value ] = node;
-              it.input[node.type][ vmVal ] = ri;
-              // console.log(it.input[node.type]);
+              it._input[node.type][ vmVal ] = ri;
+              // console.log(it._input[node.type]);
 
-              it._attrs[ vmVal ].push( VMhooks[node.type]( it.input[node.type][ vmVal ]) );
+              it._attrs[ vmVal ].push( VMhooks[node.type]( it._input[node.type][ vmVal ]) );
             } else {
               // input[node.type] like { "age":{"1": Node }}
-              it.input[node.type][ vmVal ][node.value] = node;
+              it._input[node.type][ vmVal ][node.value] = node;
             }
           } else {
             // contains: remove, html, text...
@@ -347,11 +347,9 @@ _.extend(VM.prototype, {
     } else {
       var firstKeyPos = key.search(/\[|\./);
       if(firstKeyPos === -1) {
-        // this._vm.set(key, value, options);
+        this._vm.attributes[key] = value;
+        this._vm.changed = changed;
       } else {
-        // previous vm data
-        this._vm._previousAttributes = _.clone(this._vm.attributes);
-
         var newKey   = key;
         key = newKey.slice(0, firstKeyPos);
 
@@ -374,16 +372,21 @@ _.extend(VM.prototype, {
         try {
           var execValue = new Function("obj,value", source);
           execValue(itemObj, value);
-
-          var changed = {};
-          changed[key] = value;
-          this._vm.changed = changed;
-          if(!silent) this._vm.trigger("change:"+ key, this._vm);
-          if(!silent) this._vm.trigger("change", this._vm);
         } catch(e) {
           // var e = ex;
           throw new Error("update "+ key + lastKey+" error, source="+ source);
         }
+      }
+
+      // previous vm data
+      this._vm._previousAttributes = _.clone(this._vm.attributes);
+
+      var changed = {};
+      changed[key] = value;
+      this._vm.changed = changed;
+      if(!silent) {
+        this._vm.trigger("change:"+ key, this._vm);
+        this._vm.trigger("change", this._vm);
       }
     }
     return this;
@@ -414,10 +417,10 @@ _.extend(VM.prototype, {
   destroy: function() {
     this._vm.off(null, null, this);
     this.$el.find("[vm-dombind]").off();
-    this.$el    = null;
-    this._vm    = null;
-    this._attrs = null;
-    this.input  = null;
+    this.$el     = null;
+    this._vm     = null;
+    this._attrs  = null;
+    this._input  = null;
   }
 });
 
