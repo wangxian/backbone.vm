@@ -100,7 +100,7 @@ $(document).ready(function(){
 绑定HTML dom Event，用法，on:click=customFuncName
 
 ### for
-循环显示数据， 如：
+循环显示数据，如：
 
 ```html
 // 假如

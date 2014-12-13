@@ -22,11 +22,11 @@ var vmAttrStripper = /\s+/g;
 // Handle all struct vm attribute tags,
 // eg: html, text, on...
 var VMhooks = {
-  // VM->DOM, text, html, val...
+  // VM->DOM, text, html, val, css
   simple: function($node, funcName, filters) {
-    return function(str) {
-      _.each(filters, function(filter){ str = filter(str); });
-      $node[funcName](str);
+    return function(value) {
+      _.each(filters, function(filter){ value = filter(value); });
+      $node[funcName](value);
     };
   },
 
@@ -37,12 +37,12 @@ var VMhooks = {
 
   // Show/Hide HTML element if vm item is true or false
   show: function($node) {
-    return function(isShow) { $node[isShow?'show':'hide'](); };
+    return function(isShow) { $node[isShow ? 'show' : 'hide'](); };
   },
 
   // Remove HTML element if vm item value is true
   remove: function($node) {
-    return function(isRemoved) { if(isRemoved) $node.remove(); };
+    return function(value) { if(!!value) $node.remove(); };
   },
 
   // DOM->VM, checkbox on click
@@ -68,6 +68,21 @@ var VMhooks = {
     };
   },
 
+  // VM->DOM, checkbox
+  // Handle input checkbox
+  checkbox: function(checkboxes) {
+    return function(value) {
+      if(! _.isArray(value)) return;
+      for(var r in checkboxes) {
+        if(! _.contains(value, r) ) {
+          checkboxes[r].checked = false;
+        } else {
+          checkboxes[r].checked = true;
+        }
+      }
+    };
+  },
+
   // VM->DOM, radio
   // Handle input radio
   radio: function(radios) {
@@ -83,21 +98,6 @@ var VMhooks = {
     };
   },
 
-  // VM->DOM, checkbox
-  // Handle input checkbox
-  checkbox: function(checkboxes) {
-    return function(arr) {
-      if(! _.isArray(arr)) return;
-      for(var r in checkboxes) {
-        if(! _.contains(arr, r) ) {
-          checkboxes[r].checked = false;
-        } else {
-          checkboxes[r].checked = true;
-        }
-      }
-    };
-  },
-
   // Bind html dom Event to VM function
   bindEventListener: function(vmObj, funcName){
     if(typeof vmObj[funcName] === "function") {
@@ -106,11 +106,9 @@ var VMhooks = {
     return function(){};
   },
 
-  //
-  // , function(e, id) {
-  // }
   /**
    * Bind for:struct each item delete element
+   * callback function(e, key, $el) {}
    * @param Object vmObj    vm object
    * @param String funcName bind function name in vm object
    * @param String itemKey bind current item vm key
@@ -126,6 +124,7 @@ var VMhooks = {
     }
   },
 
+  // vm-for compile and render
   forTemplate: function(vmObj, $node) {
     // Only match comments in for:struct
     var tpl = $node.html().match(/<!--([\s\S]*)-->/g);
@@ -144,15 +143,13 @@ var VMhooks = {
     // @todo: underscore >= 1.7.0, _.template accept 2 args
     var render = _.template(tpl);
 
-    // 传入 vmItemVal 为变化的 vm 数组项的值
-    return function(vmItemVal) {
-      // console.log("re render for:struct")
-
+    // 传入 value 为变化的 vm 数组项的值
+    return function(value) {
       // Before re-render for vm's view, clean older dom
       $node.empty();
 
       var args = _.clone(vmObj._filter);
-      _.each(vmItemVal, function(value, key) {
+      _.each(value, function(value, key) {
         args.$key = key;
         args.$value = value;
         // console.log(args);
@@ -177,10 +174,11 @@ var VMhooks = {
             }
           });
         });
+
       });
     };
-
   }
+
 };
 
 // Create a plugin from backbone.js, Similar usage and backbone.view
@@ -252,10 +250,11 @@ _.extend(VM.prototype, {
   _scanAttrs: function() {
     var it = this;
     this.$el.find("[vm]").each(function(k, node){
-      // VM HTML DOM node
-      var vmNodeAttrList   = node.getAttribute("vm").replace(vmAttrStripper, "").split(",");
-      _.each(vmNodeAttrList, function(v){
-        var arr = v.split(":");
+      var _attrs = node.getAttribute("vm").replace(vmAttrStripper, "");
+      if(!_attrs) return;
+      var _attrsList = _attrs.split(",");
+      _.each(_attrsList, function(v) {
+        var arr   = v.split(":");
         var vmKey = arr[0];
         var vmFilters = arr[1].split("|");
         var vmVal     = vmFilters.shift();
@@ -271,14 +270,12 @@ _.extend(VM.prototype, {
         } else if(vmKey === "remove") {
           it._attrs[ vmVal ] = [ VMhooks.remove( $(node) ) ];
         } else if(vmKey === "for") {
-          // for:struct 处理逻辑
-
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
           it._attrs[ vmVal ].push( VMhooks.forTemplate( it, $(node) ) );
-
-        } else {
+        } else if( _.contains(["html", "text", "val", "css", "class"], vmKey) ) {
           // Simple VM Bind VM -> DOM, for: text, val <-> vm model
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
+
           if(node.type === "radio" || node.type === "checkbox") {
             if(! it._input[node.type][vmVal] ) {
               // When it._input.[node.type][vmVal] is empty
@@ -294,13 +291,12 @@ _.extend(VM.prototype, {
               it._input[node.type][ vmVal ][node.value] = node;
             }
           } else {
-            // contains: remove, html, text...
-
             // 支持 filter 功能，之前把 filter 准备好，做好调用 filter 的准备
             var filters = _.map(vmFilters, function(filter){
               var filterArgs = filter.split("#");
               var filterName = filterArgs.shift();
               return function(obj){
+                // shadow copy filterArgs
                 var args = filterArgs.concat();
                 args.unshift(obj);
                 if(it._filter[filterName]) {
