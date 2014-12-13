@@ -135,7 +135,7 @@ var VMhooks = {
   },
 
   // vm-for compile and render
-  forTemplate: function(vm, $node) {
+  forTemplate: function($node) {
     // Only match comments in for:struct
     var tpl = $node.html().match(/<!--([\s\S]*)-->/g);
     tpl = tpl !== null ? tpl[0].replace(/<!--|-->/g, "") : "";
@@ -154,7 +154,7 @@ var VMhooks = {
     var render = _.template(tpl);
 
     // 传入 value 为变化的 vm 数组项的值
-    return function(value) {
+    return function(value, vm) {
       // Before re-render for vm's view, clean older dom
       $node.empty();
 
@@ -281,7 +281,7 @@ _.extend(VM.prototype, {
           it._attrs[ vmVal ].push( VMhooks.className( $(node), vmVal) );
         } else if(vmKey === "for") {
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
-          it._attrs[ vmVal ].push( VMhooks.forTemplate( it, $(node) ) );
+          it._attrs[ vmVal ].push( VMhooks.forTemplate( $(node) ) );
         } else if( _.contains(["html", "text", "val", "css"], vmKey) ) {
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
 
