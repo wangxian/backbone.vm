@@ -5,11 +5,11 @@
 # 基本
 -----------------
 - [simple-demo](simple.html)
-- [show-remove](simple-show-remove.html)
+- [simple-show-remove](simple-show-remove.html)
 - [simple-dom-event](simple-event.html)
 - [simple-form](simple-form.html)
 - [simple-css](simple-css.html)
-- [simple-filter](filter-1.html)
+- [simple-filter](simple-filter.html)
 - [for-table](simple-for-table.html)
 - [for-table-operate](simple-for-table-operate.html)
 - [for-nowrapper](simple-for-nowrapper.html)

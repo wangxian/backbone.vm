@@ -63,10 +63,7 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
     }
   });
 
-  $(document).ready(function(){
-    // init new MainApp, for test
-    window.mainapp = new MainApp();
-  });
+  $(document).ready(function(){ window.mainapp = new MainApp(); });
 });
 </script>
 
