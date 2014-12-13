@@ -45,6 +45,15 @@ var VMhooks = {
     return function(value) { if(!!value) $node.remove(); };
   },
 
+  // VM->DOM Set or clear Element's classList
+  className: function($node, vmVal) {
+    return function(value, vm) {
+      var oldValue = vm.previous(vmVal);
+      if(!!oldValue) { $node.removeClass(oldValue); }
+      if(!!value) { $node.addClass(value); }
+    };
+  },
+
   // DOM->VM, checkbox on click
   checkboxOnClick: function(vm, name) {
     return function() {
@@ -213,7 +222,6 @@ _.extend(VM.prototype, {
   // When user's app not defined, set the defulat el 'body'
   el: "body",
 
-
   // Default VM value
   defaults: {},
 
@@ -238,10 +246,9 @@ _.extend(VM.prototype, {
   _updateVM: function(model) {
     // console.info("model updated:", model.changed, model.toJSON());
     var attrs = _.pick(this._attrs, _.keys(model.changed));
+    var it = this;
     _.each(attrs, function(v, k){
-      _.each(v, function(func){
-        func(model.get(k));
-      });
+      _.each(v, function(func){ func(model.get(k), it); });
     });
   },
 
@@ -268,11 +275,13 @@ _.extend(VM.prototype, {
           it._attrs[ vmVal ] = [ VMhooks.show( $(node) ) ];
         } else if(vmKey === "remove") {
           it._attrs[ vmVal ] = [ VMhooks.remove( $(node) ) ];
+        } else if(vmKey === "class") {
+          if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
+          it._attrs[ vmVal ].push( VMhooks.className( $(node), vmVal) );
         } else if(vmKey === "for") {
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
           it._attrs[ vmVal ].push( VMhooks.forTemplate( it, $(node) ) );
-        } else if( _.contains(["html", "text", "val", "css", "class"], vmKey) ) {
-          // Simple VM Bind VM -> DOM, for: text, val <-> vm model
+        } else if( _.contains(["html", "text", "val", "css"], vmKey) ) {
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
 
           if(node.type === "radio" || node.type === "checkbox") {
@@ -403,6 +412,7 @@ _.extend(VM.prototype, {
   off: function(event, callback, context) { if(!context) context = this; this._vm.off(event, callback, context); },
   once: function(event, callback, context) { if(!context) context = this; this._vm.once(event, callback, context); },
   trigger: function() { this._vm.trigger.apply(this._vm, arguments); },
+  previous: function(attr) { return this._vm.previous(attr); },
 
 
   // 把  VM 转换为 JSON 对象

@@ -9,6 +9,7 @@
 - [simple-dom-event](simple-event.html)
 - [simple-form](simple-form.html)
 - [simple-css](simple-css.html)
+- [simple-class](simple-class.html)
 - [simple-filter](simple-filter.html)
 - [for-table](simple-for-table.html)
 - [for-table-operate](simple-for-table-operate.html)
