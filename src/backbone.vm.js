@@ -23,10 +23,10 @@ var vmAttrStripper = /\s+/g;
 // eg: html, text, on...
 var VMhooks = {
   // VM->DOM, text, html, val, css
-  simple: function($node, funcName, filters) {
+  simple: function($node, vmKey, filters) {
     return function(value) {
       _.each(filters, function(filter){ value = filter(value); });
-      $node[funcName](value);
+      $node[vmKey](value);
     };
   },
 
@@ -37,7 +37,7 @@ var VMhooks = {
 
   // Show/Hide HTML element if vm item is true or false
   show: function($node) {
-    return function(isShow) { $node[isShow ? 'show' : 'hide'](); };
+    return function(value) { $node[value ? 'show' : 'hide'](); };
   },
 
   // Remove HTML element if vm item value is true
@@ -99,9 +99,9 @@ var VMhooks = {
   },
 
   // Bind html dom Event to VM function
-  bindEventListener: function(vmObj, funcName){
-    if(typeof vmObj[funcName] === "function") {
-      return _.bind(vmObj[funcName], vmObj);
+  bindEventListener: function(vm, funcName){
+    if(typeof vm[funcName] === "function") {
+      return _.bind(vm[funcName], vm);
     }
     return function(){};
   },
@@ -109,15 +109,15 @@ var VMhooks = {
   /**
    * Bind for:struct each item delete element
    * callback function(e, key, $el) {}
-   * @param Object vmObj    vm object
+   * @param Object vm vm object
    * @param String funcName bind function name in vm object
    * @param String itemKey bind current item vm key
    * @param Object $el root each item of jquery node wrapper
    */
-  bindForListener: function(vmObj, funcName, itemKey, $el){
-    if(typeof vmObj[funcName] === "function") {
+  bindForListener: function(vm, funcName, itemKey, $el){
+    if(typeof vm[funcName] === "function") {
       return function(e) {
-        _.bind(vmObj[funcName], vmObj)( e, itemKey, $el );
+        _.bind(vm[funcName], vm)( e, itemKey, $el );
       };
     } else {
       return function(){};
@@ -125,7 +125,7 @@ var VMhooks = {
   },
 
   // vm-for compile and render
-  forTemplate: function(vmObj, $node) {
+  forTemplate: function(vm, $node) {
     // Only match comments in for:struct
     var tpl = $node.html().match(/<!--([\s\S]*)-->/g);
     tpl = tpl !== null ? tpl[0].replace(/<!--|-->/g, "") : "";
@@ -148,7 +148,7 @@ var VMhooks = {
       // Before re-render for vm's view, clean older dom
       $node.empty();
 
-      var args = _.clone(vmObj._filter);
+      var args = _.clone(vm._filter);
       _.each(value, function(value, key) {
         args.$key = key;
         args.$value = value;
@@ -170,7 +170,7 @@ var VMhooks = {
             // console.log(ev);
             if(arr[0] === "on") {
               // VMhooks.bindForListener()
-              $nodeHasVmAttr.on(ev[0], VMhooks.bindForListener(vmObj, ev[1], key, $itemNode));
+              $nodeHasVmAttr.on(ev[0], VMhooks.bindForListener(vm, ev[1], key, $itemNode));
             }
           });
         });
@@ -238,7 +238,6 @@ _.extend(VM.prototype, {
   _updateVM: function(model) {
     // console.info("model updated:", model.changed, model.toJSON());
     var attrs = _.pick(this._attrs, _.keys(model.changed));
-    // console.log(attrs);
     _.each(attrs, function(v, k){
       _.each(v, function(func){
         func(model.get(k));
