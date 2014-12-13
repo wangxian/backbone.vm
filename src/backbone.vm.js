@@ -66,14 +66,15 @@ var VMhooks = {
       } else {
         checkboxList.push(value);
       }
-      vm._vm.set(name, checkboxList, {silent: true});
+      vm.set(name, checkboxList, {silent: true});
 
+      // 修复 Model 触发 change 事件的要求
       var changed;
       (changed = {})[name] = checkboxList;
       vm._vm.changed = changed;
 
-      vm._vm.trigger("change:"+name, vm._vm, this);
-      vm.trigger("change", vm._vm, vm);
+      vm.trigger("change:"+name, vm._vm);
+      vm.trigger("change", vm._vm);
     };
   },
 
@@ -355,7 +356,7 @@ _.extend(VM.prototype, {
     } else {
       var firstKeyPos = key.search(/\[|\./);
       if(firstKeyPos === -1) {
-        this._vm.set(key, value);
+        this._vm.set(key, value, options);
       } else {
         var newKey   = key;
         key = newKey.slice(0, firstKeyPos);
