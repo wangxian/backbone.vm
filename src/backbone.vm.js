@@ -309,7 +309,7 @@ _.extend(VM.prototype, {
                 var args = filterArgs.concat();
                 args.unshift(obj);
                 if(it._filter[filterName]) {
-                  return it._filter[filterName].apply(null, args);
+                  return it._filter[filterName].apply(it, args);
                 } else if( _[filterName] ) {
                   // 支持，直接调用 underscore.js 作为 filter
                   return _[filterName].apply(null, args);
