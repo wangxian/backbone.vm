@@ -84,6 +84,8 @@ $(document).ready(function(){
 ### css
 绑定值的css属性列表，修改html style节点属性
 
+### class
+设置或取消绑定的 className
 
 ### val
 读写from input的值
