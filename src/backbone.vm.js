@@ -395,8 +395,8 @@ _.extend(VM.prototype, {
           changed[key] = value;
           this._vm.changed = changed;
           if(!silent) {
-            this._vm.trigger("change:"+ key, this._vm);
-            this._vm.trigger("change", this._vm);
+            this.trigger("change:"+ key, this._vm);
+            this.trigger("change", this._vm);
           }
         } catch(e) {
           // var e = ex;
@@ -418,11 +418,29 @@ _.extend(VM.prototype, {
   on: function(event, callback, context) { if(!context) context = this; this._vm.on(event, callback, context); },
   off: function(event, callback, context) { if(!context) context = this; this._vm.off(event, callback, context); },
   once: function(event, callback, context) { if(!context) context = this; this._vm.once(event, callback, context); },
-  trigger: function() { this._vm.trigger.apply(this._vm, arguments); },
   previous: function(attr) { return this._vm.previous(attr); },
 
+  // 重写 Backbone.Events 触发事件
+  trigger: function(ev) {
+    var args = [this._vm].concat([].slice.call(arguments, 1));
+    var ea = ev.split(":");
+    if(ea[0] === "change") {
+      if(ea.length === 2) {
+        // console.log([ev].concat(args));
+        this._vm.trigger.apply(this._vm, [ev].concat(args));
 
-  // 把  VM 转换为 JSON 对象
+        // 为了触发 change 事件
+        this._vm.changed = _.pick(this._vm.attributes, ea[1]);
+        ev = ea[0];
+      } else if(ea.length === 1) {
+        this._vm.changed = this._vm.attributes;
+      }
+    }
+    // console.log([ev].concat(args));
+    this._vm.trigger.apply(this._vm, [ev].concat(args));
+  },
+
+  // 把 VM 转换为 JSON 对象
   toJSON: function() {
     return this._vm.toJSON();
   },
