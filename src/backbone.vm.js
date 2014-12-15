@@ -135,7 +135,7 @@ var VMhooks = {
   },
 
   // vm-for compile and render
-  forTemplate: function($node) {
+  forTemplate: function($node, filters) {
     // Only match comments in for:struct
     var tpl = $node.html().match(/<!--([\s\S]*)-->/g);
     tpl = tpl !== null ? tpl[0].replace(/<!--|-->/g, "") : "";
@@ -157,6 +157,9 @@ var VMhooks = {
     return function(value, vm) {
       // Before re-render for vm's view, clean older dom
       $node.empty();
+
+      // support filters
+      _.each(filters, function(filter){ value = filter(value); });
 
       var args = _.clone(vm._filter);
       _.each(value, function(value, key) {
@@ -187,11 +190,30 @@ var VMhooks = {
 
       });
     };
+  },
+
+  // Parse html-dom-vm filter list
+  parseFilter: function(vm, vmFilters) {
+    return _.map(vmFilters, function(filter){
+      var filterArgs = filter.split("#");
+      var filterName = filterArgs.shift();
+      return function(obj){
+        // shadow copy filterArgs
+        var args = filterArgs.concat();
+        args.unshift(obj);
+        if(vm._filter[filterName]) {
+          return vm._filter[filterName].apply(vm, args);
+        } else if( _[filterName] ) {
+          // 支持，直接调用 underscore.js 作为 filter
+          return _[filterName].apply(null, args);
+        }
+      };
+    });
   }
 
 };
 
-// Create a plugin from backbone.js, Similar usage and backbone.view
+// Create a plugin from backbone.js, Similar usage like backbone.view
 var VM = Backbone.VM = function(options) {
   this.cid = _.uniqueId('vm');
   if(!options) { options = {}; }
@@ -281,7 +303,7 @@ _.extend(VM.prototype, {
           it._attrs[ vmVal ].push( VMhooks.className( $(node), vmVal) );
         } else if(vmKey === "for") {
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
-          it._attrs[ vmVal ].push( VMhooks.forTemplate( $(node) ) );
+          it._attrs[ vmVal ].push( VMhooks.forTemplate( $(node), VMhooks.parseFilter(it, vmFilters) ) );
         } else if( _.contains(["html", "text", "val", "css"], vmKey) ) {
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
 
@@ -301,25 +323,9 @@ _.extend(VM.prototype, {
             }
           } else {
             // 支持 filter 功能，之前把 filter 准备好，做好调用 filter 的准备
-            var filters = _.map(vmFilters, function(filter){
-              var filterArgs = filter.split("#");
-              var filterName = filterArgs.shift();
-              return function(obj){
-                // shadow copy filterArgs
-                var args = filterArgs.concat();
-                args.unshift(obj);
-                if(it._filter[filterName]) {
-                  return it._filter[filterName].apply(it, args);
-                } else if( _[filterName] ) {
-                  // 支持，直接调用 underscore.js 作为 filter
-                  return _[filterName].apply(null, args);
-                }
-              };
-            });
-            // console.log(filters);
-
+            // console.log( VMhooks.parseFilter(it, vmFilters) );
             // 新增：第三个参数，filters, 例如: [function(obj){ }, ...]
-            it._attrs[ vmVal ].push( VMhooks.simple( $(node), vmKey, filters ) );
+            it._attrs[ vmVal ].push( VMhooks.simple( $(node), vmKey, VMhooks.parseFilter(it, vmFilters) ) );
           }
 
           // form Bind DOM -> VM, for: input on change
