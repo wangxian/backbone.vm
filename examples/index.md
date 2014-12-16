@@ -1,6 +1,7 @@
-# 用法演示 - DEMO
+# 基本用法
+- order: 1
+-------------------------
 
----
 
 # 基本
 -----------------
@@ -13,6 +14,7 @@
 - [simple-filter](simple-filter.html)
 - [for-table](simple-for-table.html)
 - [for-table-operate](simple-for-table-operate.html)
+- [for-table-filter](simple-for-table-filter.html)
 - [for-nowrapper](simple-for-nowrapper.html)
 
 # 进阶
