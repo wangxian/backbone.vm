@@ -5,6 +5,16 @@ define(function(require, exports, module){
   var _  = require("underscore");
   var $  = require("jquery");
 
+  // Generate four random hex digits.
+  function S4() {
+     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+  }
+
+  // Generate a pseudo-GUID by concatenating random hexadecimal.
+  function guid() {
+     return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+  }
+
   var MainVM = VM.extend({
     el: "#todoapp",
 
@@ -68,7 +78,7 @@ define(function(require, exports, module){
     onKeypress: function(e) {
       if(e.which === 13) {
         this.set("title", e.target.value);
-        this.get("todos").push({_id: _.uniqueId(), title: e.target.value, completed: false});
+        this.get("todos").push({_id: guid(), title: e.target.value, completed: false});
         this.trigger("change:todos");
         e.target.value = "";
       }
