@@ -46,9 +46,16 @@ var VMhooks = {
   },
 
   // VM->DOM Set or clear Element's classList
-  className: function($node, vmVal) {
+  className: function($node, vmVal, filters) {
     return function(value, vm) {
-      var oldValue = vm.previous(vmVal);
+      var oldValue;
+      _.each(filters, function(filter){ value = filter(value); });
+      if(!_.isArray(value)) { oldValue = vm.previous(vmVal);}
+      else {
+        // 支持从filter定义类切换，如 [之前的类， 新类名称]
+        oldValue = value[0];
+        value    = value[1];
+      }
       if(!!oldValue) { $node.removeClass(oldValue); }
       if(!!value) { $node.addClass(value); }
     };
@@ -161,9 +168,9 @@ var VMhooks = {
       _.each(filters, function(filter){ value = filter(value); });
 
       var args = _.clone(vm._filter);
-      _.each(value, function(value, key) {
+      _.each(value, function(v, key) {
         args.$key = key;
-        args.$value = value;
+        args.$value = v;
         // console.log(args);
 
         var $itemNode = $(render(args));
@@ -299,7 +306,7 @@ _.extend(VM.prototype, {
           it._attrs[ vmVal ] = [ VMhooks.remove( $(node) ) ];
         } else if(vmKey === "class") {
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
-          it._attrs[ vmVal ].push( VMhooks.className( $(node), vmVal) );
+          it._attrs[ vmVal ].push( VMhooks.className( $(node), vmVal, VMhooks.parseFilter(it, vmFilters) ) );
         } else if(vmKey === "for") {
           if(! it._attrs[ vmVal ] ) it._attrs[ vmVal ] = [];
           it._attrs[ vmVal ].push( VMhooks.forTemplate( $(node), VMhooks.parseFilter(it, vmFilters) ) );

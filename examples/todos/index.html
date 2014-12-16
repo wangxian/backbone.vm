@@ -12,16 +12,16 @@
         <input id="new-todo" vm="val:title,on:keypress=onKeypress" placeholder="What needs to be done?" autofocus>
       </header>
       <section id="main">
-        <input id="toggle-all" type="checkbox" vm="on:click=markAll">
+        <input id="toggle-all" type="checkbox" vm="on:click=toggleAllComplete">
         <label for="toggle-all">Mark all as complete</label>
-        <ul id="todo-list" vm="for:todos">
+        <ul id="todo-list" vm="for:todos|filter">
           <!-- <li class="<%= $value.completed ? 'completed' : '' %>">
             <div class="view">
-              <input class="toggle" type="checkbox" <%= $value.completed ? 'checked' : '' %>>
-              <label><%- $value.title %></label>
+              <input class="toggle" vm="on:click=toggleCompleted" type="checkbox" <%= $value.completed ? 'checked' : '' %>>
+              <label vm="on:dblclick=onEnterItem"><%- $value.title %></label>
               <button class="destroy" vm="on:click=deleteIt"></button>
             </div>
-            <input class="edit" value="<%- $value.title %>">
+            <input class="edit" vm="on:keypress=onEditItem" value="<%- $value.title %>">
           </li> -->
         </ul>
       </section>
@@ -29,13 +29,13 @@
         <span id="todo-count" vm="html:remaining|complex"><strong>0</strong> item left</span>
         <ul id="filters">
           <li>
-            <a class="selected" href="#/" vm="on:click=chkFilter">All</a>
+            <a class="selected" href="#/" vm="class:selectedClass|selected#index">All</a>
           </li>
           <li>
-            <a href="#/active" vm="on:click=chkFilter">Active</a>
+            <a href="#/active" vm="class:selectedClass|selected#active">Active</a>
           </li>
           <li>
-            <a href="#/completed" vm="on:click=chkFilter">Completed</a>
+            <a href="#/completed" vm="class:selectedClass|selected#completed">Completed</a>
           </li>
         </ul>
         <button id="clear-completed" vm="on:click=clearCompletedTodos">Clear completed (<b vm="text:completed">0</b>)</button>

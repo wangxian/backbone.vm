@@ -16,7 +16,7 @@ define(function(require){
     },
 
     default: function() {
-      this.dispatch(this.action);
+      this.dispatch("index");
     },
 
     // default action
