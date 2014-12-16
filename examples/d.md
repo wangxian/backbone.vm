@@ -1,25 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>simple demo - 2014-11-17</title>
-<style>input{ width: 60%; padding: 5px 8px; }</style>
-</head>
-<body>
+# simple-demo
+- order: 5
+-------------------------
 
-
+````html
 <div id="main">
-  <h1>SIMPLE DEMO</h1>
-
-  <h2>请输入姓名：</h2>
-  <p>
-    <input id="nickname" type="text" name="nickname" vm="val:nickname" />
-  </p>
+  <p>请输入姓名：</p>
+  <p><input id="nickname" type="text" name="nickname" vm="val:nickname" /></p>
   <p>您的姓名为：<em vm="html:nickname"></em></p>
 </div>
+````
 
 <script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
-<script>
+````javascript
 seajs.config({base:'../'});
 seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
   var MainVM = VM.extend({
@@ -33,9 +25,6 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
     }
   });
 
-  $(document).ready(function(){ new MainVM(); });
+  new MainVM();
 });
-</script>
-
-</body>
-</html>
+````

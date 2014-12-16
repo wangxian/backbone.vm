@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>simple vm-class</title>
+<style>
+#demo { width: 100%; height: 300px; background-color: #ccc; }
+#demo.bg-a { background-color: #ccc; }
+#demo.bg-b { background-color: #eee; }
+#demo.bd6 { border: 6px solid orange; margin-left: -6px; }
+</style>
+</head>
+<body>
+
+
+<div id="main">
+  <h1>simple vm-class</h1>
+  <div id="demo" vm="class:myclass,class:bclass,on:click=changeit"></div>
+</div>
+
+<script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
+<script>
+seajs.config({base:'../'});
+seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
+  var MainVM = VM.extend({
+    el: "#main",
+    defaults: {
+      myclass: "bg-a",
+    },
+    changeit: function() {
+      this.set("bclass", this.get("bclass") !== "bd6" ? "bd6" : "");
+    }
+  });
+
+  $(document).ready(function(){
+    var vm = new MainVM();
+    setInterval(function(){
+      vm.set("myclass", vm.get("myclass") === "bg-a" ? "bg-b" : "bg-a");
+    }, 2000);
+  });
+});
+</script>
+
+</body>
+</html>

@@ -22,9 +22,6 @@
   button.dangerous:hover { background-color: #EC7063; }
 
 </style>
-<!--[if lt IE 9]>
-<script src="../static/js/html5shiv.js"></script>
-<![endif]-->
 </head>
 <body>
 
@@ -66,10 +63,7 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
     }
   });
 
-  $(document).ready(function(){
-    // init new MainApp, for test
-    window.mainapp = new MainApp();
-  });
+  $(document).ready(function(){ window.mainapp = new MainApp(); });
 });
 </script>
 

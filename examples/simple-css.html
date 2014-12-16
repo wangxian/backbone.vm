@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title></title>
+
+<body>
+
+
+<div id="main">
+  <h1>css demo</h1>
+
+  <div id="box" style="background-color:red;height:200px;width:1%;" vm="css:cstyle"></div>
+
+</div>
+
+<script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
+<script>
+seajs.config({base:'../'});
+seajs.use(['src/backbone.vm'], function(VM){
+  var MainApp = VM.extend({
+    defaults: {
+      cstyle: {
+        width: "1%"
+      }
+    }
+  });
+
+  var mainapp = new MainApp();
+
+  var w = 1;
+  var dir = true;
+  var timer = setInterval(function(){
+    if(dir) {
+      w++;
+      if(w === 100) {
+        dir = false;
+        mainapp.set("cstyle.backgroundColor", "orange");
+      }
+    } else {
+      w--;
+      if(w === 0) {
+        dir = true;
+        mainapp.set("cstyle.backgroundColor", "red");
+      }
+    }
+    // mainapp.set("cstyle", {width: w+"%"});
+
+    // 和上面的写法等价
+    mainapp.set("cstyle.width", w+"%");
+  }, 50);
+
+});
+</script>
+
+</body>
+</html>

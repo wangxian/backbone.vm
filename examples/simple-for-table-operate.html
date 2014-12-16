@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style>
+table { width: 60%; border-spacing: 0; border-collapse: collapse;}
+td { border: 1px solid #000; padding: 5px 15px;  }
+table thead td { border-bottom-width: 2px; background-color: #ddd; font-weight: bold; }
+table tr.even { background-color: #efefef; }
+</style>
+</head>
+<body>
+
+
+<div id="main">
+  <h1>vm-for-table-operate</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <td width="10%">Id</td>
+        <td width="20%">Name</td>
+        <td>Street</td>
+        <td width="20%">Operate</td>
+      </tr>
+    </thead>
+    <tbody vm="for:users">
+      <tr>
+        <td colspan="4">loading...</td>
+      </tr>
+      <!-- <tr class="<%= ($key+1)%2==0 ? 'even': '' %>">
+        <td><%= $value.id %></td>
+        <td><%= $value.name %></td>
+        <td><%= $value.addr %></td>
+        <td>
+          <a href="javascript:;" vm="on:click=onDelete">delete</a>
+          <a href="javascript:;" vm="on:click=onEdit">edit</a>
+        </td>
+      </tr> -->
+    </tbody>
+  </table>
+
+</div>
+
+<script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
+<script>
+seajs.config({base:'../'});
+seajs.use(['src/backbone.vm'], function(VM){
+  var MainApp = VM.extend({
+    defaults: {
+      users: [
+        {id: 1, name: "bob", addr: "1 street ave"},
+        {id: 2, name: "Kristen", addr: "10 road place"},
+        {id: 3, name: "Sarah", addr: "30 grave road"},
+        {id: 4, name: "Lucy", addr: "20 grave road"},
+        {id: 5, name: "Big Jim", addr: "39 liangmaqiao street"}
+      ]
+    },
+
+    onDelete: function(e, key, $el) {
+      this.unset("users["+ key +"]")
+    },
+
+    onEdit: function(e, key, $el){
+      // 例如：修改街道地址
+      this.set("users["+ key +"].addr", new Date);
+
+      // 当前信息
+      alert("key="+ key +"\n"+"value="+ JSON.stringify( this.get("users")[key]) );
+    }
+  });
+
+  new MainApp();
+});
+</script>
+
+</body>
+</html>

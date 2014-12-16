@@ -28,15 +28,12 @@
   li > p { margin: 5px 0; }
 
 </style>
-<!--[if lt IE 9]>
-<script src="../static/js/html5shiv.js"></script>
-<![endif]-->
 </head>
 <body>
 
 
 <div id="main">
-  <h1>struct for &amp; no-wrapper</h1>
+  <h1>vm-for &amp; no-wrapper</h1>
 
   <pre><code>
   // JSON Object对象测试
@@ -51,6 +48,7 @@
     <!--
     <p><%= $key %>=<%= $value %></p>
     <a href="javascript:;" vm="on:click=update">delete</a>
+    <hr />
     -->
   </div>
 
@@ -78,7 +76,10 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
     },
 
     update: function(e, key, $el) {
-      console.log(e, key, $el.html());
+      // console.log(e, key, $el.html());
+      delete this.get("profile")[key];
+      // console.log(this.get("profile"));
+      $el.remove();
     }
   });
 
