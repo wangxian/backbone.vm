@@ -73,8 +73,7 @@ var VMhooks = {
       (changed = {})[name] = checkboxList;
       vm._vm.changed = changed;
 
-      vm.trigger("change:"+name, vm._vm);
-      vm.trigger("change", vm._vm);
+      vm.trigger("change:"+name);
     };
   },
 
@@ -394,10 +393,7 @@ _.extend(VM.prototype, {
           var changed = {};
           changed[key] = value;
           this._vm.changed = changed;
-          if(!silent) {
-            this.trigger("change:"+ key, this._vm);
-            this.trigger("change", this._vm);
-          }
+          if(!silent) { this.trigger("change:"+ key); }
         } catch(e) {
           // var e = ex;
           throw new Error("update "+ key + lastKey+" error, source="+ source);
