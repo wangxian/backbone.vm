@@ -1,3 +1,7 @@
+/*global $,seajs,define */
+/*jshint unused:false */
+var APP = {};
+
 // seajs configure
 seajs.config({
   debug: true,
@@ -11,4 +15,4 @@ seajs.config({
 });
 
 // start app init
-seajs.use("./assets/router.js?nowrapper");
+seajs.use("./assets/js/router.js?nowrapper");

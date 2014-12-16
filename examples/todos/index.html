@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>todos</title>
+    <link rel="stylesheet" href="assets/css/base.css">
+  </head>
+  <body>
+    <section id="todoapp">
+      <header id="header">
+        <h1>todos</h1>
+        <input id="new-todo" vm="val:title,on:keypress=onKeypress" placeholder="What needs to be done?" autofocus>
+      </header>
+      <section id="main">
+        <input id="toggle-all" type="checkbox" vm="on:click=markAll">
+        <label for="toggle-all">Mark all as complete</label>
+        <ul id="todo-list" vm="for:todos">
+          <!-- <li class="<%= $value.completed ? 'completed' : '' %>">
+            <div class="view">
+              <input class="toggle" type="checkbox" <%= $value.completed ? 'checked' : '' %>>
+              <label><%- $value.title %></label>
+              <button class="destroy" vm="on:click=deleteIt"></button>
+            </div>
+            <input class="edit" value="<%- $value.title %>">
+          </li> -->
+        </ul>
+      </section>
+      <footer id="footer">
+        <span id="todo-count" vm="html:remaining|complex"><strong>0</strong> item left</span>
+        <ul id="filters">
+          <li>
+            <a class="selected" href="#/" vm="on:click=chkFilter">All</a>
+          </li>
+          <li>
+            <a href="#/active" vm="on:click=chkFilter">Active</a>
+          </li>
+          <li>
+            <a href="#/completed" vm="on:click=chkFilter">Completed</a>
+          </li>
+        </ul>
+        <button id="clear-completed" vm="on:click=clearCompletedTodos">Clear completed (<b vm="text:completed">0</b>)</button>
+      </footer>
+    </section>
+    <footer id="info">
+      <p>Double-click to edit a todo</p>
+      <p>Written by <a href="https://github.com/wangxian">wangxian</a></p>
+    </footer>
+
+    <script src="../../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
+    <script src="assets/js/init.js?nowrapper"></script>
+  </body>
+</html>

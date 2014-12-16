@@ -1,4 +1,7 @@
+/*global $,seajs,define,document,APP */
+/*jshint unused:false */
 define(function(require){
+  "use strict";
   var $        = require("jquery");
   var Backbone = require("backbone");
 
@@ -13,33 +16,27 @@ define(function(require){
     },
 
     default: function() {
-      this.dispatch("a");
+      this.dispatch(this.action);
     },
 
     // default action
-    action: "a",
+    action: "index",
 
     // Dispatch pannels
     dispatch: function(action) {
-      var it = this;
-      require.async("./app/" + action +".js?nowrapper", function(c) {
-        if(it.action === action) return;
-
-        it.panel.filter(".on").fadeOut(100, function(){
-          $(this).removeClass("on");
-          it.panel.filter('#page-' + action).fadeIn(300, function(){
-            $(this).addClass('on');
-          });
-        });
-
-        it.action = action;
-      });
+      this.action = action;
+      this.trigger("refresh", action);
     },
+
     goto: function(action) {
       this.navigate('#/' + action, { trigger: true });
     }
   });
 
   // start when domready
-  $(document).ready(function(){ new R(); Backbone.history.start(); });
+  $(document).ready(function(){
+    APP.router = new R();
+    Backbone.history.start();
+    require.async("./app.js?nowrapper");
+  });
 });

@@ -1,4 +1,7 @@
-define(function(require, exports, module){
+"use strict";
+/*global define*/
+/*jshint unused:true*/
+define(function(require){
   var VM = require("backbone.vm");
   var A = VM.extend({
     el: "#page-a",
@@ -9,6 +12,6 @@ define(function(require, exports, module){
       welcome: "here is panel a"
     }
   });
-  window.a = new A();
+  new A();
   // console.dir(a);
 });

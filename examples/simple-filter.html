@@ -15,7 +15,7 @@
   <p>
     <input id="nickname" type="text" name="nickname" vm="val:nickname|escape" />
   </p>
-  <p>您的姓名为：<em vm="text:nickname|filter1#true#1|uppercase|escape">--</em></p>
+  <p>您的姓名为：<em vm="text:nickname|myfilter#true#1|uppercase|escape">--</em></p>
 </div>
 
 <script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
@@ -39,8 +39,8 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
     el: "#main",
 
     filter: {
-      filter1: function(){
-        console.log("filter的参数列表为：", arguments);
+      myfilter: function(){
+        console.log("filter的参数列表为：", arguments, this);
         // return arguments[0];
         return encodeURIComponent(arguments[0]);
       }
