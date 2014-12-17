@@ -21,7 +21,7 @@
               <label vm="on:dblclick=onEnterItem"><%- $value.title %></label>
               <button class="destroy" vm="on:click=deleteIt"></button>
             </div>
-            <input class="edit" vm="on:keypress=onEditItem" value="<%- $value.title %>">
+            <input class="edit" vm="on:keypress=onEditItem,on:blur=onBlurItem" value="">
           </li> -->
         </ul>
       </section>

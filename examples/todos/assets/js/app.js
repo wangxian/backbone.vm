@@ -3,7 +3,6 @@
 define(function(require, exports, module){
   var VM = require("backbone.vm");
   var _  = require("underscore");
-  var $  = require("jquery");
 
   // Generate four random hex digits.
   function S4() {
@@ -117,19 +116,24 @@ define(function(require, exports, module){
     },
 
     // 双击进入编辑模式
-    onEnterItem: function(e) {
-      this.$(e.target).parent().parent().addClass("editing");
-      this.$(e.target).parent().parent().find(".edit").focus();
+    onEnterItem: function(e, key, $el) {
+      var todos = this.get("todos");
+      $el.addClass("editing");
+      $el.find(".edit").focus().val(this.filter.filter(todos)[key].title);
+    },
+
+    onBlurItem: function(e, key, $el) {
+      $el.removeClass("editing");
     },
 
     // 编辑输入模式
-    onEditItem: function(e, key) {
+    onEditItem: function(e, key, $el) {
       var todos = this.get("todos");
       var todo = this.filter.filter(todos)[key];
       if(e.which === 13) {
         _.each(todos, function(v){ if(v._id === todo._id) v.title = e.target.value; });
         this.trigger("change:todos");
-        this.$(e.target).parent().removeClass("editing");
+        $el.removeClass("editing");
       }
     }
   });
