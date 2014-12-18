@@ -173,23 +173,21 @@ var VMhooks = {
         args.$value = v;
         // console.log(args);
 
-        var $itemNode = $(render(args));
-        $node.append($itemNode);
+        var $rootNode = $(render(args));
+        $node.append($rootNode);
 
         // Fixed: 如果 for 模板里没有最外层的包装时，$(x) 是一个数组
-        var $itemNodeHasVM = $itemNode.length > 1 ? $itemNode.filter("[vm]") : $itemNode.find("[vm]");
+        var $nodesHasVM = $rootNode.length > 1 ? $rootNode.filter("[vm]") : $rootNode.find("[vm]");
 
         // 绑定for:struct循环中的事件绑定
-        $itemNodeHasVM.each(function(k, nodeHasVmAttr){
-          var $nodeHasVmAttr = $(nodeHasVmAttr);
-          var vmNodeAttrList = nodeHasVmAttr.getAttribute("vm").replace(vmAttrStripper, "").split(",");
-          _.each(vmNodeAttrList, function(v){
+        $nodesHasVM.each(function(k, nodeHasVM){
+          var nodes = nodeHasVM.getAttribute("vm").replace(vmAttrStripper, "").split(",");
+          _.each(nodes, function(v){
             var arr   = v.split(":");
             var ev    = arr[1].split("=");
             // console.log(ev);
             if(arr[0] === "on") {
-              // VMhooks.bindForListener()
-              $nodeHasVmAttr.on(ev[0], VMhooks.bindForListener(vm, ev[1], key, $itemNode));
+              $(nodeHasVM).on(ev[0], VMhooks.bindForListener(vm, ev[1], key, $rootNode));
             }
           });
         });
