@@ -271,7 +271,7 @@ _.extend(VM.prototype, {
 
   // Update VM bind node when vm model is updated
   _updateVM: function(model) {
-    // console.info("model updated:", model.changed, model.toJSON());
+    // console.info("model.changed:", model.changed, model.toJSON());
     var attrs = _.pick(this._attrs, _.keys(model.changed));
     var it = this;
     _.each(attrs, function(v, k){
@@ -366,7 +366,13 @@ _.extend(VM.prototype, {
     } else {
       var firstKeyPos = key.search(/\[|\./);
       if(firstKeyPos === -1) {
+        var forceChange = false;
+        if(!this._vm._changing && typeof value === "object") {
+          options.silent = true;
+          forceChange = true;
+        }
         this._vm.set(key, value, options);
+        if(forceChange) this.trigger("change:"+ key);
       } else {
         var newKey   = key;
         key = newKey.slice(0, firstKeyPos);
