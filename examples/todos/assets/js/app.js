@@ -14,7 +14,7 @@ define(function(require, exports, module){
   var MainVM = VM.extend({
     el: "#todoapp",
 
-    filter: {
+    filters: {
       selected: function(value, action) {
         if(APP.router.action === action) return ["selected", "selected"];
         else return ["selected", ""];
@@ -24,7 +24,7 @@ define(function(require, exports, module){
         return value>1 ? value + " items left" : value +" item left";
       },
 
-      filter: function(value) {
+      filterTodos: function(value) {
         var action = APP.router.action;
         if(action === "active") {
           return _.filter(value, function(v){ return v.completed === false; });
@@ -87,7 +87,7 @@ define(function(require, exports, module){
     // 删除一项 todo
     deleteIt: function(e, key) {
       var todos = this.get("todos");
-      var todo = this.filter.filter(todos)[key];
+      var todo = this.filters.filterTodos(todos)[key];
       todos = _.filter(todos, function(v){ return v._id !== todo._id; });
       this.set("todos", todos);
     },
@@ -95,7 +95,7 @@ define(function(require, exports, module){
     // set the todo completed=true
     toggleCompleted: function(e, key) {
       var todos = this.get("todos");
-      var todo = this.filter.filter(todos)[key];
+      var todo = this.filters.filterTodos(todos)[key];
       _.each(todos, function(v){ if(v._id === todo._id) v.completed = !v.completed; });
       this.set("todos", todos);
     },
@@ -118,7 +118,7 @@ define(function(require, exports, module){
     onEnterItem: function(e, key, $el) {
       var todos = this.get("todos");
       $el.addClass("editing");
-      $el.find(".edit").focus().val(this.filter.filter(todos)[key].title);
+      $el.find(".edit").focus().val(this.filters.filterTodos(todos)[key].title);
     },
 
     onBlurItem: function(e, key, $el) {
@@ -128,7 +128,7 @@ define(function(require, exports, module){
     // 编辑输入模式
     onEditItem: function(e, key, $el) {
       var todos = this.get("todos");
-      var todo = this.filter.filter(todos)[key];
+      var todo = this.filters.filterTodos(todos)[key];
       if(e.which === 13) {
         _.each(todos, function(v){ if(v._id === todo._id) v.title = e.target.value; });
         this.trigger("change:todos");

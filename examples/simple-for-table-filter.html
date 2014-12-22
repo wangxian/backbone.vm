@@ -43,7 +43,7 @@ table tr.even { background-color: #efefef; }
 seajs.config({base:'../'});
 seajs.use(['src/backbone.vm'], function(VM){
   var MainVM = VM.extend({
-    filter: {
+    filters: {
       filter: function(value, field, searchText) {
         var f = this.get(field);
         var t = this.get(searchText);
