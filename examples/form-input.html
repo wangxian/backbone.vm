@@ -39,8 +39,8 @@ seajs.use(['src/backbone.vm'], function(VM){
     el: "#main",
 
     initialize: function() {
-      this.on("change:w change:h", function(m){
-        // console.log(m.changed, m.previous("h"));
+      this.on("change:w", function(m){
+        // console.log("change:w change:h", m.changed);
         this.set("bstyle", {width: this.get("w"), "height": this.get("h")} );
       });
 

@@ -14,14 +14,14 @@
       <section id="main">
         <input id="toggle-all" type="checkbox" vm="on:click=toggleAllComplete">
         <label for="toggle-all">Mark all as complete</label>
-        <ul id="todo-list" vm="for:todos|filter">
+        <ul id="todo-list" vm="for:todos|filterTodos">
           <!-- <li class="<%= $value.completed ? 'completed' : '' %>">
             <div class="view">
               <input class="toggle" vm="on:click=toggleCompleted" type="checkbox" <%= $value.completed ? 'checked' : '' %>>
               <label vm="on:dblclick=onEnterItem"><%- $value.title %></label>
               <button class="destroy" vm="on:click=deleteIt"></button>
             </div>
-            <input class="edit" vm="on:keypress=onEditItem" value="<%- $value.title %>">
+            <input class="edit" vm="on:keypress=onEditItem,on:blur=onBlurItem" value="">
           </li> -->
         </ul>
       </section>

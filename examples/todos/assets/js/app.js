@@ -3,22 +3,18 @@
 define(function(require, exports, module){
   var VM = require("backbone.vm");
   var _  = require("underscore");
-  var $  = require("jquery");
 
-  // Generate four random hex digits.
-  function S4() {
-     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-  }
-
-  // Generate a pseudo-GUID by concatenating random hexadecimal.
   function guid() {
-     return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    });
   }
 
   var MainVM = VM.extend({
     el: "#todoapp",
 
-    filter: {
+    filters: {
       selected: function(value, action) {
         if(APP.router.action === action) return ["selected", "selected"];
         else return ["selected", ""];
@@ -28,7 +24,7 @@ define(function(require, exports, module){
         return value>1 ? value + " items left" : value +" item left";
       },
 
-      filter: function(value) {
+      filterTodos: function(value) {
         var action = APP.router.action;
         if(action === "active") {
           return _.filter(value, function(v){ return v.completed === false; });
@@ -79,7 +75,11 @@ define(function(require, exports, module){
       if(e.which === 13) {
         this.set("title", e.target.value);
         this.get("todos").push({_id: guid(), title: e.target.value, completed: false});
+
+        // 原始数据被改变，手工触发事件，刷新数据
         this.trigger("change:todos");
+
+        // 清空输入框中的数据
         e.target.value = "";
       }
     },
@@ -87,7 +87,7 @@ define(function(require, exports, module){
     // 删除一项 todo
     deleteIt: function(e, key) {
       var todos = this.get("todos");
-      var todo = this.filter.filter(todos)[key];
+      var todo = this.filters.filterTodos(todos)[key];
       todos = _.filter(todos, function(v){ return v._id !== todo._id; });
       this.set("todos", todos);
     },
@@ -95,9 +95,9 @@ define(function(require, exports, module){
     // set the todo completed=true
     toggleCompleted: function(e, key) {
       var todos = this.get("todos");
-      var todo = this.filter.filter(todos)[key];
+      var todo = this.filters.filterTodos(todos)[key];
       _.each(todos, function(v){ if(v._id === todo._id) v.completed = !v.completed; });
-      this.trigger("change:todos");
+      this.set("todos", todos);
     },
 
     // set all todos complated
@@ -105,7 +105,6 @@ define(function(require, exports, module){
       var todos = this.get("todos");
       _.each(todos, function(todo){ todo.completed = true; });
       this.set("todos", todos);
-      this.trigger("change:todos");
     },
 
     // 清除所有已完成的todos
@@ -113,23 +112,27 @@ define(function(require, exports, module){
       var todos = this.get("todos");
       todos = _.filter(todos, function(v){ return v.completed === false; });
       this.set("todos", todos);
-      this.trigger("change:todos");
     },
 
     // 双击进入编辑模式
-    onEnterItem: function(e) {
-      this.$(e.target).parent().parent().addClass("editing");
-      this.$(e.target).parent().parent().find(".edit").focus();
+    onEnterItem: function(e, key, $el) {
+      var todos = this.get("todos");
+      $el.addClass("editing");
+      $el.find(".edit").focus().val(this.filters.filterTodos(todos)[key].title);
+    },
+
+    onBlurItem: function(e, key, $el) {
+      $el.removeClass("editing");
     },
 
     // 编辑输入模式
-    onEditItem: function(e, key) {
+    onEditItem: function(e, key, $el) {
       var todos = this.get("todos");
-      var todo = this.filter.filter(todos)[key];
+      var todo = this.filters.filterTodos(todos)[key];
       if(e.which === 13) {
         _.each(todos, function(v){ if(v._id === todo._id) v.title = e.target.value; });
         this.trigger("change:todos");
-        this.$(e.target).parent().removeClass("editing");
+        $el.removeClass("editing");
       }
     }
   });

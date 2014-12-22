@@ -5,7 +5,7 @@ define(function(require){
   var VM = require("backbone.vm");
   var A = VM.extend({
     el: "#page-a",
-    filter: {
+    filters: {
       a: function(){}
     },
     defaults: {
