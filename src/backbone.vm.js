@@ -122,14 +122,7 @@ var VMhooks = {
     return function(){};
   },
 
-  /**
-   * Bind for:struct each item delete element
-   * callback function(e, key, $el) {}
-   * @param Object vm vm object
-   * @param String funcName bind function name in vm object
-   * @param String itemKey bind current item vm key
-   * @param Object $el root each item of jquery node wrapper
-   */
+  // Bind struct `for` dom Event to VM function
   bindForListener: function(vm, funcName, itemKey, $el){
     if(typeof vm[funcName] === "function") {
       return function(e) {
@@ -221,7 +214,7 @@ var VMhooks = {
 var VM = Backbone.VM = function(options) {
   this.cid = _.uniqueId('vm');
   if(!options) { options = {}; }
-  this._filter = _.extend({}, this._filterDefault, this.filter);
+  this._filter = _.extend({}, this._filterDefault, this.filters);
 
   // Store the relationship between Dom and model
   // eg, { "nickname":[ function(){}, .... ]}
@@ -366,13 +359,12 @@ _.extend(VM.prototype, {
     } else {
       var firstKeyPos = key.search(/\[|\./);
       if(firstKeyPos === -1) {
-        var forceChange = false;
         if(!this._vm._changing && typeof value === "object") {
-          options.silent = true;
-          forceChange = true;
+          this._vm.attributes[key] = value;
+          this.trigger("change:"+ key);
+        } else {
+          this._vm.set(key, value, options);
         }
-        this._vm.set(key, value, options);
-        if(forceChange) this.trigger("change:"+ key);
       } else {
         var newKey   = key;
         key = newKey.slice(0, firstKeyPos);
