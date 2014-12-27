@@ -23,14 +23,11 @@
 <script>
 seajs.config({base:'../'});
 seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
-  var MainApp1 = VM.extend({
-    el: "body",
-    defaults: {
-      nickname: "Nicholas C.Zakas"
-    }
+  var MainVM1 = VM.extend({
+    el: "body"
   });
 
-  var MainApp2 = VM.extend({
+  var MainVM2 = VM.extend({
     el: "#main",
     defaults: {
       nickname: "Nicholas C.Zakas",
@@ -40,8 +37,8 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
 
 
   $(document).ready(function(){
-    window.vm1 = new MainApp1();
-    window.vm2 = new MainApp2();
+    window.vm1 = new MainVM1();
+    window.vm2 = new MainVM2();
   });
 });
 </script>

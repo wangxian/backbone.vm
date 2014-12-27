@@ -1,17 +1,18 @@
-"use strict";
-/*global define*/
-/*jshint unused:true*/
+/*global $,seajs,define,document,localStorage,window,APP */
+/*jshint unused:false */
 define(function(require){
+  "use strict";
+
   var VM = require("backbone.vm");
   var A = VM.extend({
-    el: "#page-a",
-    filters: {
-      a: function(){}
-    },
+    el: "#panel-a",
+
+    filters: { a: function(){} },
+
     defaults: {
       welcome: "here is panel a"
     }
+
   });
   new A();
-  // console.dir(a);
 });

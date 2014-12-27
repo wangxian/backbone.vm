@@ -7,21 +7,20 @@
 </head>
 <body>
 
-
 <div id="main">
   <h1>SIMPLE DEMO</h1>
 
-  <h2>请输入姓名：</h2>
+  <h2>请输入昵称：</h2>
   <p>
     <input id="nickname" type="text" name="nickname" vm="val:nickname" />
   </p>
-  <p>您的姓名为：<em vm="html:nickname"></em></p>
+  <p>您的昵称为：<em vm="html:nickname"></em></p>
 </div>
 
 <script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
 <script>
 seajs.config({base:'../'});
-seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
+seajs.use(['src/backbone.vm'], function(VM){
   var MainVM = VM.extend({
     // Bind Dom id, Control of the scope of the VM
     // So, you can define some VM object
@@ -33,7 +32,7 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
     }
   });
 
-  $(document).ready(function(){ new MainVM(); });
+  new MainVM();
 });
 </script>
 

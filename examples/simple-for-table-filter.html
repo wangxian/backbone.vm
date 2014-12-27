@@ -24,7 +24,7 @@ table tr.even { background-color: #efefef; }
         <td>Street</td>
       </tr>
     </thead>
-    <tbody vm="for:users|filter#field#searchText">
+    <tbody vm="for:users|filterData#searchField#searchText">
       <tr>
         <td colspan="3">loading...</td>
       </tr>
@@ -44,8 +44,8 @@ seajs.config({base:'../'});
 seajs.use(['src/backbone.vm'], function(VM){
   var MainVM = VM.extend({
     filters: {
-      filter: function(value, field, searchText) {
-        var f = this.get(field);
+      filterData: function(value, searchField, searchText) {
+        var f = this.get(searchField);
         var t = this.get(searchText);
         value = value.filter(function(v){
           return v[f].toString().indexOf(t) !== -1;
@@ -56,12 +56,12 @@ seajs.use(['src/backbone.vm'], function(VM){
     },
 
     initialize: function() {
-      // 事件传导, 使 filter 条件变化的时候，也刷新数据
-      this.on("change:searchText", function(){ this.trigger("change:users"); });
+      // 当筛选条件发生变化的时候，刷新数据
+      this.on("change:searchText change:searchField", function(){ this.trigger("change:users"); });
     },
 
     defaults: {
-      field: "addr",
+      searchField: "addr",
       searchText: "road",
       users: [
         {id: 1, name: "bob", addr: "1 street ave"},
@@ -73,7 +73,7 @@ seajs.use(['src/backbone.vm'], function(VM){
     }
   });
 
-  window.gvm = new MainVM();
+  window.vm = new MainVM();
 });
 </script>
 

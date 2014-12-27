@@ -86,11 +86,7 @@
 <script>
 seajs.config({base:'../'});
 seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
-  // for test
-  window.$    = $;
-  window.VM   = VM;
-
-  var MainApp = VM.extend({
+  var MainVM = VM.extend({
 
     // default vm value
     defaults: {
@@ -129,8 +125,8 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
     // bind button || delete user
     deleteUser: function(e, key, $el) {
       // console.log("this->", this);
-      // console.log("$el:", $el.get(0));
       // console.log("key->", key);
+      // console.log("$el:", $el);
 
       // re-render list
       this.unset("userlist["+ key +"]");
@@ -143,8 +139,8 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
   });
 
   $(document).ready(function(){
-    // init new MainApp, for test
-    window.mainapp = new MainApp();
+    // init new MainVM, for test
+    window.mainvm = new MainVM();
   });
 });
 </script>

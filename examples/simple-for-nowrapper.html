@@ -62,7 +62,7 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
   window.$    = $;
   window.VM   = VM;
 
-  var MainApp = VM.extend({
+  var MainVM = VM.extend({
     el: "#main",
 
     // default vm value
@@ -77,13 +77,21 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
 
     update: function(e, key, $el) {
       // console.log(e, key, $el.html());
+
+      // 删除，重新渲染
+      // this.unset("profile."+ key);
+
+      // 删除，不重渲染
+      // 手工删除vm中的数据，需要手工删除 dom
       delete this.get("profile")[key];
-      // console.log(this.get("profile"));
       $el.remove();
+
+
+      console.log(this.get("profile"));
     }
   });
 
-  $(document).ready(function(){ window.mainapp = new MainApp(); });
+  $(document).ready(function(){ window.mainvm = new MainVM(); });
 });
 </script>
 

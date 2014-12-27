@@ -65,11 +65,7 @@
 <script>
 seajs.config({base:'../'});
 seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
-  // for test
-  window.$    = $;
-  window.VM   = VM;
-
-  var MainApp = VM.extend({
+  var MainVM = VM.extend({
 
     // default vm value
     defaults: {
@@ -81,14 +77,15 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
     // So, you can define some VM object
     el: "#main",
 
-    // At initialization we do something
+    // When initialization, we do something
     initialize: function() {
+
     }
 
   });
 
   $(document).ready(function(){
-    window.mainapp = new MainApp();
+    window.mainvm = new MainVM();
   });
 });
 </script>

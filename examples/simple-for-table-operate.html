@@ -47,7 +47,7 @@ table tr.even { background-color: #efefef; }
 <script>
 seajs.config({base:'../'});
 seajs.use(['src/backbone.vm'], function(VM){
-  var MainApp = VM.extend({
+  var MainVM = VM.extend({
     defaults: {
       users: [
         {id: 1, name: "bob", addr: "1 street ave"},
@@ -71,7 +71,7 @@ seajs.use(['src/backbone.vm'], function(VM){
     }
   });
 
-  new MainApp();
+  new MainVM();
 });
 </script>
 

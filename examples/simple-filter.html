@@ -11,23 +11,18 @@
 <div id="main">
   <h1>value filter simple demo</h1>
 
-  <h2>请输入姓名：</h2>
+  <h2>请输入昵称：</h2>
   <p>
     <input id="nickname" type="text" name="nickname" vm="val:nickname|escape" />
   </p>
-  <p>您的姓名为：<em vm="text:nickname|myfilter#true#1|uppercase|escape">--</em></p>
+  <p>您的昵称为：<em vm="text:nickname|myfilter#true#1|uppercase|escape">--</em></p>
 </div>
 
 <script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
 <script>
 seajs.config({base:'../'});
 seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
-  // for test
-  window.$    = $;
-  window.VM   = VM;
-
-  // console.dir(new (Backbone.VM.extend({"id":12})) )
-  var MainApp = VM.extend({
+  var MainVM = VM.extend({
 
     // default vm value
     defaults: {
@@ -40,7 +35,8 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
 
     filters: {
       myfilter: function(){
-        console.log("filter的参数列表为：", arguments, this);
+        console.log("filter的参数列表为：", arguments);
+        console.log("this=", this);
         // return arguments[0];
         return encodeURIComponent(arguments[0]);
       }
@@ -48,10 +44,7 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
 
   });
 
-  $(document).ready(function(){
-    // init new MainApp, for test
-    window.mainapp = new MainApp();
-  });
+  $(document).ready(function(){  new MainVM(); });
 });
 </script>
 

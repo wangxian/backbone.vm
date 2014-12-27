@@ -21,7 +21,7 @@ define(function(require, exports, module){
       },
 
       complex: function(value) {
-        return value>1 ? value + " items left" : value +" item left";
+        return value >1 ? value + " items left" : value +" item left";
       },
 
       filterTodos: function(value) {

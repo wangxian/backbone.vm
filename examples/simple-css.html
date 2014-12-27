@@ -3,22 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <title></title>
-
+<style>
+#box { background-color:red;height:200px;width:1%; }
+</style>
+</head>
 <body>
 
 
 <div id="main">
   <h1>css demo</h1>
-
-  <div id="box" style="background-color:red;height:200px;width:1%;" vm="css:cstyle"></div>
-
+  <div id="box" vm="css:cstyle"></div>
 </div>
 
 <script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
 <script>
 seajs.config({base:'../'});
 seajs.use(['src/backbone.vm'], function(VM){
-  var MainApp = VM.extend({
+  var MainVM = VM.extend({
     defaults: {
       cstyle: {
         width: "1%"
@@ -26,28 +27,28 @@ seajs.use(['src/backbone.vm'], function(VM){
     }
   });
 
-  var mainapp = new MainApp();
+  var vm = new MainVM();
 
   var w = 1;
-  var dir = true;
-  var timer = setInterval(function(){
-    if(dir) {
+  var direction = true;
+  setInterval(function(){
+    if(direction) {
       w++;
       if(w === 100) {
-        dir = false;
-        mainapp.set("cstyle.backgroundColor", "orange");
+        direction = false;
+        vm.set("cstyle.backgroundColor", "orange");
       }
     } else {
       w--;
       if(w === 0) {
-        dir = true;
-        mainapp.set("cstyle.backgroundColor", "red");
+        direction = true;
+        vm.set("cstyle.backgroundColor", "red");
       }
     }
-    // mainapp.set("cstyle", {width: w+"%"});
 
+    // vm.set("cstyle", {width: w+"%"});
     // 和上面的写法等价
-    mainapp.set("cstyle.width", w+"%");
+    vm.set("cstyle.width", w+"%");
   }, 50);
 
 });

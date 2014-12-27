@@ -129,4 +129,4 @@ userlist 可以是 array 或 json object，如果是array key为数字索引，
 
 ## Others
 
-暂无
+更多用法，请参考 [demos](examples/index.html) 示例。

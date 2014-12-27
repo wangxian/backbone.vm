@@ -1,13 +1,14 @@
-"use strict";
 /*global define, document*/
 define(function(require){
+  "use strict";
+
   var $        = require("jquery");
   var Backbone = require("backbone");
 
   var R = Backbone.Router.extend({
     routes: {
       "": "default",
-      ":action": "dispatch"
+      "!/panel/:action": "dispatch"
     },
 
     initialize: function() {
@@ -29,7 +30,7 @@ define(function(require){
 
         it.panel.filter(".on").fadeOut(100, function(){
           $(this).removeClass("on");
-          it.panel.filter('#page-' + action).fadeIn(300, function(){
+          it.panel.filter('#panel-' + action).fadeIn(300, function(){
             $(this).addClass('on');
           });
         });
@@ -37,11 +38,12 @@ define(function(require){
         it.action = action;
       });
     },
+
     goto: function(action) {
-      this.navigate('#/' + action, { trigger: true });
+      this.navigate('#!/' + action, { trigger: true });
     }
   });
 
   // start when domready
-  $(document).ready(function(){ new R(); Backbone.history.start(); });
+  $(document).ready(function(){ window.r = new R(); Backbone.history.start(); });
 });

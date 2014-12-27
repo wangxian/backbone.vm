@@ -20,7 +20,6 @@
   button:hover { background-color: #48c9b0; }
   button.dangerous { background-color: #E74C3C; }
   button.dangerous:hover { background-color: #EC7063; }
-
 </style>
 </head>
 <body>
@@ -31,19 +30,15 @@
   <p>
     <button id="btn-click-me" type="button" vm="on:click=clickMe">点我+++++</button>
   </p>
-  <p>点击次数：<i vm="text:clickCount">-</i></p>
+  <p>点击次数：<i vm="text:clickCount">0</i></p>
 
 </div>
 
 <script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
 <script>
 seajs.config({base:'../'});
-seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
-  // for test
-  window.$    = $;
-  window.VM   = VM;
-
-  var MainApp = VM.extend({
+seajs.use(['src/backbone.vm'], function(VM){
+  var MainVM = VM.extend({
 
     defaults: {
       clickCount: 0
@@ -53,17 +48,12 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
 
     // When click button#btn-click-me
     clickMe: function(e) {
-      // console.log("this", this);
-      // console.log("e:", e);
-      // var _e = e.currentTarget;
-      // console.log(_e.type);
-
       var clickCount = this.get("clickCount") + 1;
       this.set("clickCount", clickCount );
     }
   });
 
-  $(document).ready(function(){ window.mainapp = new MainApp(); });
+  window.mainvm = new MainVM();
 });
 </script>
 

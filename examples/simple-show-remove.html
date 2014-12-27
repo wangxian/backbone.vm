@@ -45,12 +45,8 @@
 <script src="../spm_modules/seajs/2.3.0/dist/sea.js?nowrapper"></script>
 <script>
 seajs.config({base:'../'});
-seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
-  // for test
-  window.$    = $;
-  window.VM   = VM;
-
-  var MainApp = VM.extend({
+seajs.use(['src/backbone.vm'], function(VM){
+  var MainVM = VM.extend({
 
     // default vm value
     defaults: {
@@ -71,10 +67,7 @@ seajs.use(['jquery/1.10.2/jquery.js','src/backbone.vm'], function($, VM){
 
   });
 
-  $(document).ready(function(){
-    // init new MainApp, for test
-    window.mainapp = new MainApp();
-  });
+  new MainVM();
 });
 </script>
 

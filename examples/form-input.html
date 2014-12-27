@@ -24,9 +24,7 @@
 <script>
 seajs.config({base:'../'});
 seajs.use(['src/backbone.vm'], function(VM){
-  window.VM   = VM;
-
-  var MainApp = VM.extend({
+  var MainVM = VM.extend({
     defaults: {
       w: 5,
       h: 200,
@@ -48,11 +46,14 @@ seajs.use(['src/backbone.vm'], function(VM){
       //   console.log(m.changed, "bstyle 变了");
       // });
     },
+
     updateHeight: function(e) {
       this.set("h", e.target.value);
     }
   });
-  window.mainapp = new MainApp();
+
+  window.mainvm = new MainVM();
+
 });
 </script>
 
