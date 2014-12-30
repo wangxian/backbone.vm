@@ -1,4 +1,4 @@
-define("backbone.vm/1.2.0/src/backbone.vm-debug", ["jquery/1.10.2/jquery-debug", "underscore/1.6.0/underscore-debug", "backbone/1.1.2/backbone-debug"], function(require, exports, module) {
+define("backbone.vm/1.2.0/backbone.vm-debug", ["jquery/1.10.2/jquery-debug", "underscore/1.6.0/underscore-debug", "backbone/1.1.2/backbone-debug"], function(require, exports, module) {
   //  Backbone.vm.js 1.2.0
   //  (c) 2013-2014 wangxian, DocumentCloud and Investigative Reporters & Editors
   //  Backbone may be freely distributed under the MIT license.
@@ -123,14 +123,7 @@ define("backbone.vm/1.2.0/src/backbone.vm-debug", ["jquery/1.10.2/jquery-debug",
       }
       return function() {};
     },
-    /**
-     * Bind for:struct each item delete element
-     * callback function(e, key, $el) {}
-     * @param Object vm vm object
-     * @param String funcName bind function name in vm object
-     * @param String itemKey bind current item vm key
-     * @param Object $el root each item of jquery node wrapper
-     */
+    // Bind struct `for` dom Event to VM function
     bindForListener: function(vm, funcName, itemKey, $el) {
       if (typeof vm[funcName] === "function") {
         return function(e) {
@@ -169,21 +162,19 @@ define("backbone.vm/1.2.0/src/backbone.vm-debug", ["jquery/1.10.2/jquery-debug",
           args.$key = key;
           args.$value = v;
           // console.log(args);
-          var $itemNode = $(render(args));
-          $node.append($itemNode);
+          var $rootNode = $(render(args));
+          $node.append($rootNode);
           // Fixed: 如果 for 模板里没有最外层的包装时，$(x) 是一个数组
-          var $itemNodeHasVM = $itemNode.length > 1 ? $itemNode.filter("[vm]") : $itemNode.find("[vm]");
+          var $nodesHasVM = $rootNode.length > 1 ? $rootNode.filter("[vm]") : $rootNode.find("[vm]");
           // 绑定for:struct循环中的事件绑定
-          $itemNodeHasVM.each(function(k, nodeHasVmAttr) {
-            var $nodeHasVmAttr = $(nodeHasVmAttr);
-            var vmNodeAttrList = nodeHasVmAttr.getAttribute("vm").replace(vmAttrStripper, "").split(",");
-            _.each(vmNodeAttrList, function(v) {
+          $nodesHasVM.each(function(k, nodeHasVM) {
+            var nodes = nodeHasVM.getAttribute("vm").replace(vmAttrStripper, "").split(",");
+            _.each(nodes, function(v) {
               var arr = v.split(":");
               var ev = arr[1].split("=");
               // console.log(ev);
               if (arr[0] === "on") {
-                // VMhooks.bindForListener()
-                $nodeHasVmAttr.on(ev[0], VMhooks.bindForListener(vm, ev[1], key, $itemNode));
+                $(nodeHasVM).on(ev[0], VMhooks.bindForListener(vm, ev[1], key, $rootNode));
               }
             });
           });
@@ -215,7 +206,7 @@ define("backbone.vm/1.2.0/src/backbone.vm-debug", ["jquery/1.10.2/jquery-debug",
     if (!options) {
       options = {};
     }
-    this._filter = _.extend({}, this._filterDefault, this.filter);
+    this._filter = _.extend({}, this._filterDefault, this.filters);
     // Store the relationship between Dom and model
     // eg, { "nickname":[ function(){}, .... ]}
     this._attrs = {};
@@ -262,7 +253,7 @@ define("backbone.vm/1.2.0/src/backbone.vm-debug", ["jquery/1.10.2/jquery-debug",
     initialize: function() {},
     // Update VM bind node when vm model is updated
     _updateVM: function(model) {
-      // console.info("model updated:", model.changed, model.toJSON());
+      // console.info("model.changed:", model.changed, model.toJSON());
       var attrs = _.pick(this._attrs, _.keys(model.changed));
       var it = this;
       _.each(attrs, function(v, k) {
@@ -350,7 +341,12 @@ define("backbone.vm/1.2.0/src/backbone.vm-debug", ["jquery/1.10.2/jquery-debug",
       } else {
         var firstKeyPos = key.search(/\[|\./);
         if (firstKeyPos === -1) {
-          this._vm.set(key, value, options);
+          if (!this._vm._changing && typeof value === "object") {
+            this._vm.attributes[key] = value;
+            this.trigger("change:" + key);
+          } else {
+            this._vm.set(key, value, options);
+          }
         } else {
           var newKey = key;
           key = newKey.slice(0, firstKeyPos);
