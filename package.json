@@ -1,8 +1,8 @@
 {
   "name": "backbone.vm",
   "version": "1.2.0",
-  "description": "A VM plugin for backbone",
-  "keywords": [],
+  "description": "A MVVM plugin for backbone",
+  "keywords": ["MVVM", "backbone"],
   "homepage": "https://github.com/wangxian/backbone.vm.js",
   "author": "wangxian",
   "maintainers": [

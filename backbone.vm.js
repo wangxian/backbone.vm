@@ -1,6 +1,6 @@
 //  Backbone.vm.js 1.2.0
 
-//  (c) 2013-2014 wangxian, DocumentCloud and Investigative Reporters & Editors
+//  (c) 2013-2015 wangxian, DocumentCloud and Investigative Reporters & Editors
 //  Backbone may be freely distributed under the MIT license.
 //  For all details and documentation:
 //  http://github.com/wangxian/backbone.vm
@@ -446,7 +446,6 @@ _.extend(VM.prototype, {
 
   // destory VM object when a new vm is not used
   // clear vm variable, unbind dom delegate
-  // @todo ...
   destroy: function() {
     this._vm.off(null, null, this);
     this.$el.find("[vm-dombind]").off();

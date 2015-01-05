@@ -4,7 +4,7 @@
 
 [![spm version](http://spmjs.io/badge/backbone.vm.js)](http://spmjs.io/package/backbone.vm.js)
 
-A VM plugin for backbone.js
+A MVVM plugin for backbone.js
 
 ---
 
@@ -47,8 +47,8 @@ $ spm install backbone.vm --save
 app.js 的内容：
 
 ```js
-// use VM
-var MainApp = VM.extend({
+// use MVVM
+var MainVM = VM.extend({
 
   // Bind Dom id, Control of the scope of the VM
   // So, you can define some VM object
@@ -62,7 +62,7 @@ var MainApp = VM.extend({
 });
 
 $(document).ready(function(){
-  new MainApp();
+  new MainVM();
 });
 
 ```
